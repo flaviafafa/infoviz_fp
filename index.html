@@ -1,0 +1,111 @@
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+
+    <style>
+    </style>
+
+
+</head>
+
+<body>
+    <svg id="chartArea" height="400" width="1200"></svg>
+    <script>
+        const requestData = async () => {
+            const timeData = await d3.csv("time_df.csv");
+
+            const monthlyTotals = {};
+
+            timeData.forEach(d => {
+                const key = `${String(d.month).padStart(2, '0')}-${d.year}`;
+                const bites = +d.number_of_bites;
+                const temp = +d.temperature_avg;
+
+                if (!monthlyTotals[key]) {
+                    monthlyTotals[key] = {
+                        monthYear: key,
+                        year: +d.year,
+                        month: +d.month,
+                        totalBites: 0,
+                        tempSum: 0,
+                        dayCount: 0
+                    };
+                }
+                monthlyTotals[key].totalBites += bites;
+                monthlyTotals[key].tempSum += temp;
+                monthlyTotals[key].dayCount += 1;
+            });
+
+            const monthlyData = Object.values(monthlyTotals).map(d => {
+                return {
+                    monthYear: d.monthYear,
+                    year: d.year,
+                    month: d.month,
+                    totalBites: d.totalBites,
+                    avgTemp: d.tempSum / d.dayCount
+                };
+            }).sort((a, b) => a.year - b.year || a.month - b.month);
+
+            const svg = d3.select("#chartArea");
+            const width = +svg.attr("width");
+            const height = +svg.attr("height");
+            const margin = { top: 10, right: 10, bottom: 50, left: 50 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+
+            const g = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const xScale = d3.scaleLinear()
+                .domain([0, monthlyData.length - 1])
+                .range([0, chartWidth]);
+
+            const yScale = d3.scaleLinear()
+                .domain(d3.extent(monthlyData, d => d.totalBites))
+                .range([chartHeight, 0]);
+
+            const time_bite_line = d3.line()
+                .x((d, i) => xScale(i))
+                .y(d => yScale(d.totalBites));
+
+            g.append("path")
+                .datum(monthlyData)
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 2)
+                .attr("d", time_bite_line);
+
+
+            // const xAxis = d3.axisBottom(xScale)
+            //     .ticks(monthlyData.length)
+            //     .tickFormat((d, i) => monthlyData[i].monthYear);
+
+
+            const xAxis = d3.axisBottom(xScale)
+                .ticks(monthlyData.length)
+                .tickFormat((d, i) => {
+                    if (i % 12 === 0) {
+                        return monthlyData[i].monthYear;
+                    }
+                    return '';
+                });
+
+            g.append("g")
+                .attr("transform", `translate(0,${chartHeight})`)
+                .call(xAxis)
+                .selectAll("text")
+                .attr("transform", "rotate(45)")
+                .style("text-anchor", "start");
+
+            // Y-axis
+            const yAxis = d3.axisLeft(yScale);
+            g.append("g").call(yAxis);
+        }
+
+        requestData();
+    </script>
+
+
+</body>
