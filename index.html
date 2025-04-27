@@ -5,15 +5,187 @@
     <script src="https://d3js.org/topojson.v3.min.js"></script>
 
     <style>
+        body{
+            margin: 0px;
+            font-family: 'Baloo 2', cursive;
+            color: #041F3D;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container-centered{
+            width: 96%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        h2{
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .colored-bg {
+            background-color: ffefda
+        }
+
+        .session{
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
     </style>
 
 
 </head>
 
 <body>
-    <svg id="chartArea" height="400" width="1200"></svg>
+
+    <!--Introduction-->
+    <div class="session container-centered">
+        <div>
+            <h1 style="font-weight:800; font-size: 32px;">
+                TITLE TITLE TITLE TITLE TITLE TITLE TITLE TITLE TITLE TITLE TITLE
+            </h1>
+            <h3>Flavia Jiang, Curtis Xu, Xinyi Zhou</h3>
+
+            <div>Intro paragraph</div>
+        </div>
+    </div>
+
+    <!--Bite incidents by breed-->
+    <div class="session colored-bg">
+        <div id="container-breed" class="container-centered">
+            <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
+            <svg id="svg-breed" height="600" width="1100"></svg>
+        </div>
+    </div>
+
+    <!--Bite incidents by gender x spay & neuter-->
+    <div class="session">
+        <div id="container-gender" class="container-centered">
+            <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
+
+        </div>
+    </div>
+
+    <!--Bite incidents by age-->
+    <div class="session colored-bg">
+        <div id="container-age" class="colored-bg container-centered">
+            <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
+
+        </div>
+    </div>
+
+    <!--Bite incidents by time-->
+    <div class="session">
+        <div id="container-time" class="container-centered">
+            <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
+            <svg id="svg-time" height="400" width="700"></svg>
+
+        </div>
+    </div>
+
+    <!--Bite incidents by neighborhood-->
+    <div class="session colored-bg">
+        <div id="container-zip" class="colored-bg container-centered">
+            <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
+
+        </div>
+    </div>
+
+
+
     <script>
         const requestData = async () => {
+            // Bite incidents by breed
+            const breedData = await d3.csv("breed_df.csv");
+
+            breedData.forEach(d => {
+                d.bite_score_ranking = 16 - +d.bite_score_ranking;
+                d.aggresiveness_score_ranking = 16 - +d.aggresiveness_score_ranking;
+            });
+
+            const svg_breed = d3.select("#svg-breed");
+            const width_breed = +svg_breed.attr("width");
+            const height_breed = +svg_breed.attr("height");
+            const margin_breed = { top: 30, right: 20, bottom: 100, left: 60 };
+            const chartWidth_breed = width_breed - margin_breed.left - margin_breed.right;
+            const chartHeight_breed = height_breed - margin_breed.top - margin_breed.bottom;
+
+            const g_breed = svg_breed.append("g")
+                .attr("transform", `translate(${margin_breed.left},${margin_breed.top})`);
+
+            const xScale_breed = d3.scaleBand()
+                .domain(breedData.map(d => d.breed))
+                .range([0, chartWidth_breed])
+                .padding(0.4);
+
+            const yScale_breed = d3.scaleLinear()
+                .domain([0, 15])
+                .range([chartHeight_breed / 2, 0]);
+
+            const yScale_breed_neg = d3.scaleLinear()
+                .domain([0, 15])
+                .range([0, chartHeight_breed / 2]);
+
+            g_breed.selectAll(".bar-bite")
+                .data(breedData)
+                .join("rect")
+                .attr("class", "bar-bite")
+                .attr("x", d => xScale_breed(d.breed))
+                .attr("width", xScale_breed.bandwidth())
+                .attr("y", d => yScale_breed(d.bite_score_ranking))
+                .attr("height", d => chartHeight_breed / 2 - yScale_breed(d.bite_score_ranking))
+                .attr("fill", "#ff8c42");
+
+            g_breed.selectAll(".bar-agg")
+                .data(breedData)
+                .join("rect")
+                .attr("class", "bar-agg")
+                .attr("x", d => xScale_breed(d.breed))
+                .attr("width", xScale_breed.bandwidth())
+                .attr("y", chartHeight_breed / 2)
+                .attr("height", d => yScale_breed_neg(d.aggresiveness_score_ranking))
+                .attr("fill", "#041f3d");
+
+            g_breed.selectAll(".breed-image")
+                .data(breedData)
+                .join("circle")
+                .attr("cx", d => xScale_breed(d.breed) + xScale_breed.bandwidth() / 2)
+                .attr("cy", chartHeight_breed / 2)
+                .attr("r", xScale_breed.bandwidth() * 0.7)
+                .attr("fill", "white")
+                .attr("stroke", "#041f3d")
+                .attr("stroke-width", 2);
+
+            g_breed.selectAll(".breed-img")
+                .data(breedData)
+                .join("image")
+                .attr("xlink:href", d => `dog_cartoons/${d.breed.replaceAll(' ', '_')}.png`)
+                .attr("x", d => xScale_breed(d.breed) - xScale_breed.bandwidth() * 0.1)
+                .attr("y", chartHeight_breed/2 - xScale_breed.bandwidth() * 0.6)
+                .attr("width", xScale_breed.bandwidth() * 1.2)
+                .attr("height", xScale_breed.bandwidth() * 1.2);
+
+
+            const yAxis_breed = d3.axisLeft(yScale_breed)
+                .tickValues([0, 3, 6, 9, 12, 15]);
+            g_breed.append("g").call(yAxis_breed);
+
+            const yAxis_breed_neg = d3.axisLeft(yScale_breed_neg)
+                .tickValues([0, 3, 6, 9, 12, 15]);
+            g_breed.append("g")
+                .attr("transform", `translate(0,${chartHeight_breed / 2})`)
+                .call(yAxis_breed_neg);
+
+
+            // --------------------------------------------------
+            // --------------------------------------------------
+            // --------------------------------------------------
+
+
+            // Bite incidents by time
             const timeData = await d3.csv("time_df.csv");
 
             const monthlyTotals = {};
@@ -48,29 +220,29 @@
                 };
             }).sort((a, b) => a.year - b.year || a.month - b.month);
 
-            const svg = d3.select("#chartArea");
-            const width = +svg.attr("width");
-            const height = +svg.attr("height");
-            const margin = { top: 10, right: 10, bottom: 50, left: 50 };
-            const chartWidth = width - margin.left - margin.right;
-            const chartHeight = height - margin.top - margin.bottom;
+            const svg_time = d3.select("#svg-time");
+            const width_time = +svg_time.attr("width");
+            const height_time = +svg_time.attr("height");
+            const margin_time = { top: 10, right: 10, bottom: 50, left: 50 };
+            const chartWidth_time = width_time - margin_time.left - margin_time.right;
+            const chartHeight_time = height_time - margin_time.top - margin_time.bottom;
 
-            const g = svg.append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+            const g_time = svg_time.append("g")
+                .attr("transform", `translate(${margin_time.left},${margin_time.top})`);
 
-            const xScale = d3.scaleLinear()
+            const xScale_time = d3.scaleLinear()
                 .domain([0, monthlyData.length - 1])
-                .range([0, chartWidth]);
+                .range([0, chartWidth_time]);
 
-            const yScale = d3.scaleLinear()
+            const yScale_time = d3.scaleLinear()
                 .domain(d3.extent(monthlyData, d => d.totalBites))
-                .range([chartHeight, 0]);
+                .range([chartHeight_time, 0]);
 
             const time_bite_line = d3.line()
-                .x((d, i) => xScale(i))
-                .y(d => yScale(d.totalBites));
+                .x((d, i) => xScale_time(i))
+                .y(d => yScale_time(d.totalBites));
 
-            g.append("path")
+            g_time.append("path")
                 .datum(monthlyData)
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
@@ -78,12 +250,12 @@
                 .attr("d", time_bite_line);
 
 
-            // const xAxis = d3.axisBottom(xScale)
+            // const xAxis_time = d3.axisBottom(xScale_time)
             //     .ticks(monthlyData.length)
             //     .tickFormat((d, i) => monthlyData[i].monthYear);
 
 
-            const xAxis = d3.axisBottom(xScale)
+            const xAxis_time = d3.axisBottom(xScale_time)
                 .ticks(monthlyData.length)
                 .tickFormat((d, i) => {
                     if (i % 12 === 0) {
@@ -92,16 +264,16 @@
                     return '';
                 });
 
-            g.append("g")
-                .attr("transform", `translate(0,${chartHeight})`)
-                .call(xAxis)
+            g_time.append("g")
+                .attr("transform", `translate(0,${chartHeight_time})`)
+                .call(xAxis_time)
                 .selectAll("text")
                 .attr("transform", "rotate(45)")
                 .style("text-anchor", "start");
 
             // Y-axis
-            const yAxis = d3.axisLeft(yScale);
-            g.append("g").call(yAxis);
+            const yAxis_time = d3.axisLeft(yScale_time);
+            g_time.append("g").call(yAxis_time);
         }
 
         requestData();
