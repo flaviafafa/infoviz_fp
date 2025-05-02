@@ -86,7 +86,14 @@
     <div class="session">
         <div id="container-time" class="container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-            <svg id="svg-time" height="400" width="700"></svg>
+            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 50px">
+                <svg id="svg-time" height="450" width="650"></svg>
+                <div style="display:flex; flex-direction:column">
+                    <svg id="svg-temp" height="300" width="450"></svg>
+                    <svg id="svg-precip" height="300" width="450"></svg>
+                </div>
+
+            </div>
 
         </div>
     </div>
@@ -494,8 +501,9 @@
             // --------------------------------------------------
 
 
-            // Bite incidents by time
-            const timeData = await d3.csv("time_df.csv");
+// Bite incidents by time
+const timeData = await d3.csv("time_df.csv");
+            console.log(timeData);
 
             const monthlyTotals = {};
 
@@ -503,6 +511,7 @@
                 const key = `${String(d.month).padStart(2, '0')}-${d.year}`;
                 const bites = +d.number_of_bites;
                 const temp = +d.temperature_avg;
+                const precip = +d.precipitation;
 
                 if (!monthlyTotals[key]) {
                     monthlyTotals[key] = {
@@ -511,12 +520,14 @@
                         month: +d.month,
                         totalBites: 0,
                         tempSum: 0,
+                        precipitation: 0,
                         dayCount: 0
                     };
                 }
                 monthlyTotals[key].totalBites += bites;
                 monthlyTotals[key].tempSum += temp;
                 monthlyTotals[key].dayCount += 1;
+                monthlyTotals[key].precipitation += precip;
             });
 
             const monthlyData = Object.values(monthlyTotals).map(d => {
@@ -525,14 +536,17 @@
                     year: d.year,
                     month: d.month,
                     totalBites: d.totalBites,
-                    avgTemp: d.tempSum / d.dayCount
+                    avgTemp: d.tempSum / d.dayCount,
+                    avgPrecip: d.precipitation / d.dayCount,
                 };
             }).sort((a, b) => a.year - b.year || a.month - b.month);
+
+            console.log(monthlyData);
 
             const svg_time = d3.select("#svg-time");
             const width_time = +svg_time.attr("width");
             const height_time = +svg_time.attr("height");
-            const margin_time = { top: 10, right: 10, bottom: 50, left: 50 };
+            const margin_time = { top: 10, right: 10, bottom: 70, left: 70 };
             const chartWidth_time = width_time - margin_time.left - margin_time.right;
             const chartHeight_time = height_time - margin_time.top - margin_time.bottom;
 
@@ -554,16 +568,13 @@
             g_time.append("path")
                 .datum(monthlyData)
                 .attr("fill", "none")
-                .attr("stroke", "steelblue")
+                .attr("stroke", "#FD8C40")
                 .attr("stroke-width", 2)
                 .attr("d", time_bite_line);
 
 
-            // const xAxis_time = d3.axisBottom(xScale_time)
-            //     .ticks(monthlyData.length)
-            //     .tickFormat((d, i) => monthlyData[i].monthYear);
 
-
+            //x-Axis-time
             const xAxis_time = d3.axisBottom(xScale_time)
                 .ticks(monthlyData.length)
                 .tickFormat((d, i) => {
@@ -580,9 +591,181 @@
                 .attr("transform", "rotate(45)")
                 .style("text-anchor", "start");
 
-            // Y-axis
+            // Y-axis-time
             const yAxis_time = d3.axisLeft(yScale_time);
             g_time.append("g").call(yAxis_time);
+
+            // Y-axis-time label
+            svg_time.append("text")
+                .attr("transform", `rotate(-90)`)
+                .attr("y", 10)
+                .attr("x", -height_time / 2 + 30)
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text("Number of Bites");
+
+            // X-axis-time label
+            svg_time.append("text")
+                .attr("x", margin_time.left + chartWidth_time / 2)
+                .attr("y", height_time - 5)
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text("Time (Month-Year)");
+
+
+            const svg_temp = d3.select("#svg-temp");
+            const width_temp = +svg_temp.attr("width");
+            const height_temp = +svg_temp.attr("height");
+            const margin_temp = { top: 10, right: 10, bottom: 70, left: 70 };
+            const chartWidth_temp = width_temp - margin_temp.left - margin_temp.right;
+            const chartHeight_temp = height_temp - margin_temp.top - margin_temp.bottom;
+
+            const g_temp = svg_temp.append("g")
+                .attr("transform", `translate(${margin_temp.left},${margin_temp.top})`);
+
+            const xScale_temp = d3.scaleLinear()
+                .domain([0, monthlyData.length - 1])
+                .range([0, chartWidth_temp]);
+
+            const yScale_temp = d3.scaleLinear()
+                .domain(d3.extent(monthlyData, d => d.avgTemp))
+                .range([chartHeight_temp, 0]);
+
+            const time_temp_line = d3.line()
+                .x((d, i) => xScale_temp(i))
+                .y(d => yScale_temp(d.avgTemp));
+
+            g_temp.append("path")
+                .datum(monthlyData)
+                .attr("fill", "none")
+                .attr("stroke", "#F4D35E")
+                .attr("stroke-width", 2)
+                .attr("d", time_temp_line);
+
+
+            g_temp.append("g")
+                .attr("transform", `translate(0,${chartHeight_time})`)
+                .call(xAxis_time)
+                .selectAll("text")
+                .attr("transform", "rotate(45)")
+                .style("text-anchor", "start");
+
+            //x-Axis-temp
+            const xAxis_temp = d3.axisBottom(xScale_temp)
+                .ticks(monthlyData.length)
+                .tickFormat((d, i) => {
+                    if (i % 12 === 0) {
+                        return monthlyData[i].monthYear;
+                    }
+                    return '';
+                });
+
+            g_temp.append("g")
+                .attr("transform", `translate(0,${chartHeight_temp})`)
+                .call(xAxis_temp)
+                .selectAll("text")
+                .attr("transform", "rotate(45)")
+                .style("text-anchor", "start");
+
+            // Y-axis
+            const yAxis_temp = d3.axisLeft(yScale_temp);
+            g_temp.append("g").call(yAxis_temp);
+
+            // Y-axis label
+            svg_temp.append("text")
+                .attr("transform", `rotate(-90)`)
+                .attr("y", 10)
+                .attr("x", -height_temp / 2)
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text("Average Temperature(F)");
+
+            // X-axis label
+            svg_temp.append("text")
+                .attr("x", margin_temp.left + chartWidth_temp / 2)
+                .attr("y", height_temp - 5)
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text("Time (Month-Year)");
+
+
+            const svg_precip = d3.select("#svg-precip");
+            const width_precip = +svg_precip.attr("width");
+            const height_precip = +svg_precip.attr("height");
+            const margin_precip = { top: 10, right: 10, bottom: 70, left: 70 };
+            const chartWidth_precip = width_precip - margin_precip.left - margin_precip.right;
+            const chartHeight_precip = height_precip - margin_precip.top - margin_precip.bottom;
+
+            const g_precip = svg_precip.append("g")
+                .attr("transform", `translate(${margin_precip.left},${margin_precip.top})`);
+
+            const xScale_precip = d3.scaleLinear()
+                .domain([0, monthlyData.length - 1])
+                .range([0, chartWidth_precip]);
+
+            const yScale_precip = d3.scaleLinear()
+                .domain(d3.extent(monthlyData, d => d.avgPrecip))
+                .range([chartHeight_precip, 0]);
+
+            const time_precip_line = d3.line()
+                .x((d, i) => xScale_precip(i))
+                .y(d => yScale_precip(d.avgPrecip));
+
+            g_precip.append("path")
+                .datum(monthlyData)
+                .attr("fill", "none")
+                .attr("stroke", "#3ec9c1")
+                .attr("stroke-width", 2)
+                .attr("d", time_precip_line);
+
+
+            //x-Axis-temp
+            const xAxis_precip = d3.axisBottom(xScale_precip)
+                .ticks(monthlyData.length)
+                .tickFormat((d, i) => {
+                    if (i % 12 === 0) {
+                        return monthlyData[i].monthYear;
+                    }
+                    return '';
+                });
+
+            g_precip.append("g")
+                .attr("transform", `translate(0,${chartHeight_precip})`)
+                .call(xAxis_precip)
+                .selectAll("text")
+                .attr("transform", "rotate(45)")
+                .style("text-anchor", "start");
+
+            g_precip.append("g")
+                .attr("transform", `translate(0,${chartHeight_precip})`)
+                .call(xAxis_precip)
+                .selectAll("text")
+                .attr("transform", "rotate(45)")
+                .style("text-anchor", "start");
+
+            // Y-axis
+            const yAxis_precip = d3.axisLeft(yScale_precip);
+            g_precip.append("g").call(yAxis_precip);
+            d => d.avgprecip
+            // Y-axis label
+            svg_precip.append("text")
+                .attr("transform", `rotate(-90)`)
+                .attr("y", 10)
+                .attr("x", -height_precip / 2)
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text("Average Precipitation");
+
+            // X-axis label
+            svg_precip.append("text")
+                .attr("x", margin_precip.left + chartWidth_precip / 2)
+                .attr("y", height_precip - 5)
+                .style("text-anchor", "middle")
+                .style("font-size", "14px")
+                .text("Time (Month-Year)");
         }
 
         requestData();
