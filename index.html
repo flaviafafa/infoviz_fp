@@ -35,10 +35,6 @@
             padding-bottom: 40px;
         }
 
-        .tooltip {
-            z-index: 10 !important;
-        }
-
     </style>
 
 
@@ -62,7 +58,7 @@
     <div class="session colored-bg">
         <div id="container-breed" class="container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-            <svg id="svg-breed" height="600" width="1200"></svg>
+            <svg id="svg-breed" height="540" width="1200"></svg>
         </div>
     </div>
 
@@ -78,7 +74,7 @@
     <div class="session colored-bg">
         <div id="container-age" class="colored-bg container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-            <svg id="svg-age" height="540" width="720"></svg>
+            <svg id="svg-age" height="600" width="720"></svg>
         </div>
     </div>
 
@@ -122,7 +118,7 @@
             const svg_breed = d3.select("#svg-breed");
             const width_breed = +svg_breed.attr("width");
             const height_breed = +svg_breed.attr("height");
-            const margin_breed = { top: 50, right: 20, bottom: 50, left: 40 };
+            const margin_breed = { top: 50, right: 20, bottom: 60, left: 40 };
             const chartWidth_breed = width_breed - margin_breed.left - margin_breed.right;
             const chartHeight_breed = height_breed - margin_breed.top - margin_breed.bottom;
 
@@ -173,8 +169,7 @@
             // Create a group for each breed 
             const breedGroups = g_breed.selectAll(".breed-group")
                 .data(breedData)
-                .enter()
-                .append("g")
+                .join("g")
                 .attr("class", "breed-group")
                 .attr("transform", d => `translate(${xScale_breed(d.breed)},0)`);
 
@@ -304,10 +299,10 @@
                     .text(d.breed);
 
                 tooltip.select(".tooltip-bite")
-                    .text(`Bite Frequency: ${d.bite_score} (out of 15)`);
+                    .html(`Bite Frequency: <tspan style="font-weight:bold">${d.bite_score} out of 15</tspan>`);
 
                 tooltip.select(".tooltip-agg")
-                    .text(`Owner-Rated Aggressiveness: ${d.aggresiveness_score} (out of 15)`);
+                    .html(`Owner-Rated Aggressiveness: <tspan style="font-weight:bold">${d.aggresiveness_score} out of 15</tspan>`);
             })
             .on("mousemove", function(event) {
                 const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
@@ -379,7 +374,7 @@
 
             const width_age = +svg_age.attr("width");
             const height_age = +svg_age.attr("height");
-            const margin_age = { top: 10, right: 90, bottom: 80, left: 10 };
+            const margin_age = { top: 50, right: 90, bottom: 80, left: 10 };
             const chartWidth_age = width_age - margin_age.left - margin_age.right;
             const chartHeight_age = height_age - margin_age.top - margin_age.bottom;
 
@@ -423,26 +418,29 @@
 
             // Add lollipops
             const colorScale = d3.scaleThreshold()
-                .domain([0.5, 1.5])
+                .domain([0.8, 1.6])
                 .range(["#ffd1a8", "#ff8c42", "#e65c00"]);
 
-            ageData.forEach(d => {
-                const ageGroup = g_age.append("g")
-                    .attr("transform", `translate(${xScale_age(d.ageLabel) + xScale_age.bandwidth()/2},0)`);
-    
-                ageGroup.append("line")
-                    .attr("y1", yScale_age(0))
-                    .attr("y2", yScale_age(d.bite_versus_population_ratio))
-                    .attr("stroke", "#041F3D")
-                    .attr("stroke-width", 2);
-    
-                ageGroup.append("circle")
-                    .attr("cy", yScale_age(d.bite_versus_population_ratio))
-                    .attr("r", 13)
-                    .attr("fill", colorScale(d.bite_versus_population_ratio))
-                    .attr("stroke", "#041F3D")
-                    .attr("stroke-width", 2);
-            });
+            const lollipopGroups = g_age.selectAll(".lollipop-group")
+                .data(ageData)
+                .join("g")
+                .attr("class", "lollipop-group")
+                .attr("transform", d => `translate(${xScale_age(d.ageLabel) + xScale_age.bandwidth()/2},0)`);
+
+            lollipopGroups.append("line")
+                .attr("class", "lollipop-line")
+                .attr("y1", yScale_age(0))
+                .attr("y2", d => yScale_age(d.bite_versus_population_ratio))
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 2);
+
+            lollipopGroups.append("circle")
+                .attr("class", "lollipop-circle")
+                .attr("cy", d => yScale_age(d.bite_versus_population_ratio))
+                .attr("r", 13)
+                .attr("fill", d => colorScale(d.bite_versus_population_ratio))
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 2);
 
             // x axis
             const xAxis = g_age.append("g")
@@ -457,7 +455,7 @@
 
             xAxis.append("text")
                 .attr("x", chartWidth_age / 2)
-                .attr("y", 65)
+                .attr("y", 60)
                 .attr("text-anchor", "middle")
                 .text("Age")
                 .style("font-size", "28px")
@@ -488,14 +486,152 @@
                 .attr("dx", "0.3em");
 
             g_age.append("text")
-                .attr("transform", "rotate(-270)")
-                .attr("y", -chartHeight_age-240)
-                .attr("x", chartWidth_age/2-70)
+                .attr("y", -20)
+                .attr("x", chartWidth_age-90)
                 .attr("text-anchor", "middle")
                 .text("Bite Frequency Score")
                 .style("font-size", "28px")
                 .style("font-weight", "bold")
                 .style("fill", "#041F3D");
+            
+            // Tooltip
+            const ageTooltip = g_age.append("g")
+                .attr("class", "age-tooltip")
+                .style("opacity", 0)
+                .style("pointer-events", "none");
+
+            ageTooltip.append("rect")
+                .attr("width", 400)
+                .attr("height", 100)
+                .attr("rx", 10)
+                .attr("ry", 10)
+                .attr("fill", "white")
+                .attr("stroke-width", 4);
+
+            ageTooltip.append("text")
+                .attr("class", "tooltip-interpretation")
+                .attr("x", 20)
+                .attr("y", 40)
+                .attr("fill", "#041F3D")
+                .style("font-size", "20px")
+                .style("font-family", "'Baloo 2', cursive");
+
+            // Hover-over events
+            lollipopGroups.on("mouseover", function(event, d) {
+                const borderColor = colorScale(d.bite_versus_population_ratio);
+                d3.select(this).select(".lollipop-circle")
+                    .attr("r", 17)
+                    .attr("stroke-width", 4);
+    
+                d3.select(this).select(".lollipop-line")
+                    .attr("stroke-width", 4);
+
+                ageTooltip.select("rect")
+                    .attr("stroke", borderColor);
+
+                const ratio = d.bite_versus_population_ratio.toFixed(2);
+                const comparison = d.bite_versus_population_ratio > 1 ? "higher" : "lower";
+
+                const htmlContent = `At the age of <tspan style="font-weight:bold">${d.age === 1 ? "1 year or younger" : `${d.age} years`}</tspan>, the bite rate is <tspan style="font-weight:bold">${ratio}</tspan> times <tspan style="font-weight:bold">${comparison}</tspan> than expected based on population share.`;
+
+                // text wrapping
+                const tooltipText = ageTooltip.select(".tooltip-interpretation");
+                tooltipText.selectAll("*").remove();
+
+                const maxCharsPerLine = 40;
+                const words = htmlContent.split(' ');
+                let line = [];
+                let lineNumber = 0;
+                const xPos = 20;
+                const initialYPos = 40;
+                const lineHeight = 30;
+
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.visibility = 'hidden';
+                tempDiv.style.whiteSpace = 'nowrap';
+                tempDiv.style.fontFamily = "'Baloo 2', cursive";
+                tempDiv.style.fontSize = '20px';
+                document.body.appendChild(tempDiv);
+
+                words.forEach((word, i) => {
+                    line.push(word);
+                    tempDiv.innerHTML = line.join(' ');
+                    const testWidth = tempDiv.offsetWidth;
+    
+                    if (testWidth > 360 && line.length > 1) { 
+                        line.pop();
+                        tooltipText.append("tspan")
+                            .attr("x", xPos)
+                            .attr("y", initialYPos + (lineNumber * lineHeight))
+                            .html(line.join(' '));
+        
+                        line = [word];
+                        lineNumber++;
+                    }
+                });
+
+                // Add the last line
+                if (line.length > 0) {
+                    tooltipText.append("tspan")
+                        .attr("x", xPos)
+                        .attr("y", initialYPos + (lineNumber * lineHeight))
+                        .html(line.join(' '));
+                }
+
+                document.body.removeChild(tempDiv);
+
+                const tooltipHeight = 70 + (lineNumber * lineHeight);
+                ageTooltip.select("rect")
+                    .attr("height", tooltipHeight);
+                
+                const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
+                const tooltipWidth = 400;
+                const tooltipHeightValue = tooltipHeight;
+
+                let x = mouseX + 10;
+                if (x + tooltipWidth > width_age) {
+                    x = width_age - tooltipWidth - 10;
+                }
+
+                let y = mouseY + 10;
+                if (y + tooltipHeightValue > height_age) {
+                    y = height_age - tooltipHeightValue - 10;
+                }
+
+                y = Math.max(10, y);
+
+                ageTooltip.style("opacity", 1)
+                    .attr("transform", `translate(${x},${y})`);
+            })
+            .on("mouseout", function() {
+                d3.select(this).select(".lollipop-circle")
+                    .attr("r", 13)
+                    .attr("stroke-width", 2);
+    
+                d3.select(this).select(".lollipop-line")
+                    .attr("stroke-width", 2);
+
+                ageTooltip.style("opacity", 0);
+            })
+            .on("mousemove", function(event) {
+                const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
+                const tooltipWidth = 400;
+                const tooltipHeight = +ageTooltip.select("rect").attr("height");
+    
+                let x = mouseX + 10;
+                if (x + tooltipWidth > width_age) {
+                    x = width_age - tooltipWidth - 10;
+                }
+    
+                let y = mouseY + 10;
+                if (y + tooltipHeight > height_age) {
+                    y = height_age - tooltipHeight - 10;
+                }
+                y = Math.max(10, y);
+    
+                ageTooltip.attr("transform", `translate(${x},${y})`);
+            })
 
             // --------------------------------------------------
             // --------------------------------------------------
