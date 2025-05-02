@@ -52,20 +52,15 @@
         #mapCanvas {
             width: 80%;
             height: 80%;
-        }
-
-        #geocoder-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 300px;
-            z-index: 2;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            left: 40px
         }
 
         .sidebar {
             position: absolute;
-            top: 80px;
-            right: 20px;
+            top: 0px;
+            right: 40px;
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -78,8 +73,9 @@
             width: 180px;
             margin: 8px 0;
             padding: 10px 14px;
-            background-color: #4285f4;
-            color: white;
+            background-color: #ffefda;
+            font-family: 'Baloo 2', cursive;
+            color: black;
             border: none;
             border-radius: 6px;
             font-size: 15px;
@@ -88,7 +84,7 @@
         }
 
         .sidebar button:hover {
-            background-color: #3367d6;
+            background-color: #ebbb7d;
         }
 
         .sidebar button:active {
@@ -99,7 +95,7 @@
         #geocoder-container {
             position: absolute;
             top: 10px;
-            left: 10px;
+            left: 50px;
             width: 50%;
             z-index: 1;
         }
@@ -173,8 +169,9 @@
             <div id="mapCanvas"></div>
             <div id="geocoder-container"></div>
             <div id="layer-control" class="sidebar">
-                <button onclick="toggleLayer('zip-centroid-dots')">Dog Bites</button><br>
-                <button onclick="toggleLayer('zip-dog-fills')">Dog Distribution</button><br>
+                <button onclick="toggleLayer('zip-centroid-dots')">Bite Incidents</button><br>
+                <button onclick="toggleLayer('zip-dog-fills')">Dog Population Distribution</button><br>
+
                 <button onclick="toggleLayer('park-fills')">Open Spaces / Parks</button>
 
             </div>
@@ -1072,7 +1069,8 @@
                         },
                         properties: {
                             zip: zip,
-                            number_of_bites: numBites
+                            number_of_bites: numBites,
+                            number_of_dogs: numDogs
                         }
                     });
                 }
@@ -1125,27 +1123,27 @@
 
                 // });
 
-                // ---- ZIP dog hover popup ----
-                const dogPopup = new mapboxgl.Popup({
-                    closeButton: false,
-                    closeOnClick: false
-                });
+                // // ---- ZIP dog hover popup ----
+                // const dogPopup = new mapboxgl.Popup({
+                //     closeButton: false,
+                //     closeOnClick: false
+                // });
 
-                map.on('mouseenter', 'zip-dog-fills', (e) => {
-                    map.getCanvas().style.cursor = 'pointer';
-                    const props = e.features[0].properties;
-                    const coordinates = e.lngLat;
+                // map.on('mouseenter', 'zip-dog-fills', (e) => {
+                //     map.getCanvas().style.cursor = 'pointer';
+                //     const props = e.features[0].properties;
+                //     const coordinates = e.lngLat;
 
-                    dogPopup
-                        .setLngLat(coordinates)
-                        .setHTML(`<strong>ZIP: ${props.postcode}</strong><br>Dogs: ${props.number_of_dogs}`)
-                        .addTo(map);
-                });
+                //     dogPopup
+                //         .setLngLat(coordinates)
+                //         .setHTML(`<strong>ZIP: ${props.postcode}</strong><br>Dogs: ${props.number_of_dogs}`)
+                //         .addTo(map);
+                // });
 
-                map.on('mouseleave', 'zip-dog-fills', () => {
-                    map.getCanvas().style.cursor = '';
-                    dogPopup.remove();
-                });
+                // map.on('mouseleave', 'zip-dog-fills', () => {
+                //     map.getCanvas().style.cursor = '';
+                //     dogPopup.remove();
+                // });
 
                 // ---- ZIP centroid dots ----
                 map.addSource('zip-centroids', {
@@ -1193,7 +1191,8 @@
 
                     zipPopup
                         .setLngLat(coordinates)
-                        .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}`)
+                        .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}<br>Dogs: ${props.number_of_dogs}`)
+
                         .addTo(map);
                 });
 
