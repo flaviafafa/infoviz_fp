@@ -34,6 +34,10 @@
             padding-bottom: 40px;
         }
 
+        .tooltip {
+            z-index: 10 !important;
+        }
+
     </style>
 
 
@@ -57,7 +61,7 @@
     <div class="session colored-bg">
         <div id="container-breed" class="container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-            <svg id="svg-breed" height="600" width="1100"></svg>
+            <svg id="svg-breed" height="600" width="1200"></svg>
         </div>
     </div>
 
@@ -102,19 +106,28 @@
             const breedData = await d3.csv("breed_df.csv");
 
             breedData.forEach(d => {
-                d.bite_score_ranking = 16 - +d.bite_score_ranking;
-                d.aggresiveness_score_ranking = 16 - +d.aggresiveness_score_ranking;
+                d.bite_score = 16 - +d.bite_score_ranking;
+                d.aggresiveness_score = 16 - +d.aggresiveness_score_ranking;
             });
 
             const svg_breed = d3.select("#svg-breed");
             const width_breed = +svg_breed.attr("width");
             const height_breed = +svg_breed.attr("height");
-            const margin_breed = { top: 30, right: 20, bottom: 100, left: 60 };
+            const margin_breed = { top: 50, right: 20, bottom: 50, left: 30 };
             const chartWidth_breed = width_breed - margin_breed.left - margin_breed.right;
             const chartHeight_breed = height_breed - margin_breed.top - margin_breed.bottom;
 
             const g_breed = svg_breed.append("g")
                 .attr("transform", `translate(${margin_breed.left},${margin_breed.top})`);
+
+            g_breed.append("line")
+                .attr("x1", 0)
+                .attr("y1", chartHeight_breed / 2)
+                .attr("x2", chartWidth_breed)
+                .attr("y2", chartHeight_breed / 2)
+                .attr("stroke", "#041F3D") 
+                .attr("stroke-width", 2)
+                .lower(); 
 
             const xScale_breed = d3.scaleBand()
                 .domain(breedData.map(d => d.breed))
@@ -129,55 +142,221 @@
                 .domain([0, 15])
                 .range([0, chartHeight_breed / 2]);
 
-            g_breed.selectAll(".bar-bite")
-                .data(breedData)
-                .join("rect")
-                .attr("class", "bar-bite")
-                .attr("x", d => xScale_breed(d.breed))
-                .attr("width", xScale_breed.bandwidth())
-                .attr("y", d => yScale_breed(d.bite_score_ranking))
-                .attr("height", d => chartHeight_breed / 2 - yScale_breed(d.bite_score_ranking))
-                .attr("fill", "#ff8c42");
+            // Add y-axis titles
+            g_breed.append("text")
+                .attr("y", 0)
+                .attr("x", chartWidth_breed/2)
+                .attr("text-anchor", "middle")
+                .text("Bite Frequency Score")
+                .style("font-size", "28px")
+                .style("font-weight", "bold")
+                .style("fill", "#041F3D");
 
-            g_breed.selectAll(".bar-agg")
+            g_breed.append("text")
+                .attr("y", 520)
+                .attr("x", chartWidth_breed/2)
+                .attr("text-anchor", "middle")
+                .text("Owner-Rated Aggressiveness Score")
+                .style("font-size", "28px")
+                .style("font-weight", "bold")
+                .style("fill", "#041F3D");
+
+            // Create a group for each breed 
+            const breedGroups = g_breed.selectAll(".breed-group")
                 .data(breedData)
-                .join("rect")
+                .enter()
+                .append("g")
+                .attr("class", "breed-group")
+                .attr("transform", d => `translate(${xScale_breed(d.breed)},0)`);
+
+            // Add bars
+            breedGroups.append("rect")
+                .attr("class", "bar-bite")
+                .attr("width", xScale_breed.bandwidth())
+                .attr("y", d => yScale_breed(d.bite_score))
+                .attr("height", d => chartHeight_breed / 2 - yScale_breed(d.bite_score))
+                .attr("fill", "#ff8c42")
+                .attr("rx", 3)
+                .attr("ry", 3)
+                .attr("opacity", 0.8);
+
+            breedGroups.append("rect")
                 .attr("class", "bar-agg")
-                .attr("x", d => xScale_breed(d.breed))
                 .attr("width", xScale_breed.bandwidth())
                 .attr("y", chartHeight_breed / 2)
-                .attr("height", d => yScale_breed_neg(d.aggresiveness_score_ranking))
-                .attr("fill", "#041f3d");
+                .attr("height", d => yScale_breed_neg(d.aggresiveness_score))
+                .attr("fill", "#3ec9c1")
+                .attr("rx", 3)
+                .attr("ry", 3)
+                .attr("opacity", 0.8);
 
-            g_breed.selectAll(".breed-image")
-                .data(breedData)
-                .join("circle")
-                .attr("cx", d => xScale_breed(d.breed) + xScale_breed.bandwidth() / 2)
+            // Add image circles
+            breedGroups.append("circle")
+                .attr("class", "breed-image")
+                .attr("cx", xScale_breed.bandwidth() / 2)
                 .attr("cy", chartHeight_breed / 2)
-                .attr("r", xScale_breed.bandwidth() * 0.7)
+                .attr("r", xScale_breed.bandwidth() * 0.75)
                 .attr("fill", "white")
                 .attr("stroke", "#041f3d")
                 .attr("stroke-width", 2);
 
-            g_breed.selectAll(".breed-img")
-                .data(breedData)
-                .join("image")
+            // Add images
+            breedGroups.append("image")
+                .attr("class", "breed-img")
                 .attr("xlink:href", d => `dog_cartoons/${d.breed.replaceAll(' ', '_')}.png`)
-                .attr("x", d => xScale_breed(d.breed) - xScale_breed.bandwidth() * 0.1)
-                .attr("y", chartHeight_breed/2 - xScale_breed.bandwidth() * 0.6)
-                .attr("width", xScale_breed.bandwidth() * 1.2)
-                .attr("height", xScale_breed.bandwidth() * 1.2);
+                .attr("x", -xScale_breed.bandwidth() * 0.2)
+                .attr("y", chartHeight_breed/2 - xScale_breed.bandwidth() * 0.65)
+                .attr("width", xScale_breed.bandwidth() * 1.4)
+                .attr("height", xScale_breed.bandwidth() * 1.4);
 
+            // Style tooltip
+            const tooltip = g_breed.append("g")
+                .attr("class", "tooltip")
+                .style("opacity", 0)
+                .style("pointer-events", "none");
 
+            tooltip.append("rect")
+                .attr("width", 480)
+                .attr("height", 150)
+                .attr("rx", 10)
+                .attr("ry", 10)
+                .attr("fill", "white")
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 2);
+
+            tooltip.append("image")
+                .attr("class", "tooltip-img")
+                .attr("x", 10)
+                .attr("y", 20)
+                .attr("width", 110)
+                .attr("height", 110);
+
+            tooltip.append("text")
+                .attr("class", "tooltip-title")
+                .attr("x", 130)
+                .attr("y", 50)
+                .style("font-size", "20px")
+                .style("font-weight", "bold");
+
+            tooltip.append("text")
+                .attr("class", "tooltip-bite")
+                .attr("x", 130)
+                .attr("y", 80)
+                .style("font-size", "18px");
+
+            tooltip.append("text")
+                .attr("class", "tooltip-agg")
+                .attr("x", 130)
+                .attr("y", 110)
+                .style("font-size", "18px");
+
+            // Hover-over functions
+            breedGroups.on("mouseover", function(event, d) {
+
+                d3.select(this).selectAll("rect")
+                    .attr("opacity", 1)
+                    .attr("stroke", "#041F3D")
+                    .attr("stroke-width", 2);
+
+                // Dim other breeds
+                breedGroups.filter(dd => dd !== d).selectAll("rect")
+                    .attr("opacity", 0.3);
+
+                const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
+    
+                const tooltipWidth = 480;
+                const tooltipHeight = 150;
+                const padding = 10;
+    
+                let x;
+                if (mouseX > width_breed - tooltipWidth - padding) {
+                    x = mouseX - tooltipWidth - padding;
+                } else {
+                    x = mouseX + padding;
+                }
+    
+                let y;
+                if (mouseY < chartHeight_breed / 2) { 
+                    y = mouseY + padding;
+                } else {
+                    y = mouseY - tooltipHeight - padding;
+                }
+    
+                // Do boundary checks
+                y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
+
+                tooltip.style("opacity", 1)
+                    .attr("transform", `translate(${x},${y})`);
+
+                tooltip.select(".tooltip-img")
+                    .attr("xlink:href", `dog_cartoons/${d.breed.replaceAll(' ', '_')}.png`);
+
+                tooltip.select(".tooltip-title")
+                    .text(d.breed);
+
+                tooltip.select(".tooltip-bite")
+                    .text(`Bite Frequency: ${d.bite_score} (out of 15)`);
+
+                tooltip.select(".tooltip-agg")
+                    .text(`Owner-Rated Aggressiveness: ${d.aggresiveness_score} (out of 15)`);
+            })
+            .on("mousemove", function(event) {
+                const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
+    
+                const tooltipWidth = 480;
+                const tooltipHeight = 150;
+                const padding = 10;
+    
+                let x;
+                if (mouseX > width_breed - tooltipWidth - padding) {
+                    x = mouseX - tooltipWidth - padding;
+                } else {
+                    x = mouseX + padding;
+                }
+    
+                let y;
+                if (mouseY < chartHeight_breed / 2) {
+                    y = mouseY + padding;
+                } else {
+                    y = mouseY - tooltipHeight - padding;
+                }
+    
+                // Move tooltip
+                y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
+
+                tooltip.attr("transform", `translate(${x},${y})`);
+            })
+            .on("mouseout", function() {
+                breedGroups.selectAll("rect")
+                    .attr("opacity", 0.8)
+                    .attr("stroke", "none");
+
+                tooltip.style("opacity", 0);
+            });
+
+            // Create axes
             const yAxis_breed = d3.axisLeft(yScale_breed)
-                .tickValues([0, 3, 6, 9, 12, 15]);
-            g_breed.append("g").call(yAxis_breed);
+                .tickValues([0, 3, 6, 9, 12, 15])
+                .tickSizeOuter(0);
+
+            g_breed.append("g")
+                .attr("class", "y-axis")
+                .call(yAxis_breed)
+                .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
+                .call(g => g.selectAll(".tick line").attr("stroke", "#041F3D").attr("stroke-width", 2))
+                .call(g => g.selectAll(".tick text").style("font-size", "16px").style("fill", "#041F3D"));
 
             const yAxis_breed_neg = d3.axisLeft(yScale_breed_neg)
-                .tickValues([0, 3, 6, 9, 12, 15]);
+                .tickValues([0, 3, 6, 9, 12, 15])
+                .tickSizeOuter(0);
+
             g_breed.append("g")
                 .attr("transform", `translate(0,${chartHeight_breed / 2})`)
-                .call(yAxis_breed_neg);
+                .attr("class", "y-axis")
+                .call(yAxis_breed_neg)
+                .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
+                .call(g => g.selectAll(".tick line").attr("stroke", "#041F3D").attr("stroke-width", 2))
+                .call(g => g.selectAll(".tick text").style("font-size", "16px").style("fill", "#041F3D"));
 
 
             // --------------------------------------------------
