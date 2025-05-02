@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
 
@@ -77,7 +78,7 @@
     <div class="session colored-bg">
         <div id="container-age" class="colored-bg container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-
+            <svg id="svg-age" height="520" width="680"></svg>
         </div>
     </div>
 
@@ -102,6 +103,7 @@
 
     <script>
         const requestData = async () => {
+
             // Bite incidents by breed
             const breedData = await d3.csv("breed_df.csv");
 
@@ -113,7 +115,7 @@
             const svg_breed = d3.select("#svg-breed");
             const width_breed = +svg_breed.attr("width");
             const height_breed = +svg_breed.attr("height");
-            const margin_breed = { top: 50, right: 20, bottom: 50, left: 30 };
+            const margin_breed = { top: 50, right: 20, bottom: 50, left: 40 };
             const chartWidth_breed = width_breed - margin_breed.left - margin_breed.right;
             const chartHeight_breed = height_breed - margin_breed.top - margin_breed.bottom;
 
@@ -344,7 +346,7 @@
                 .call(yAxis_breed)
                 .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
                 .call(g => g.selectAll(".tick line").attr("stroke", "#041F3D").attr("stroke-width", 2))
-                .call(g => g.selectAll(".tick text").style("font-size", "16px").style("fill", "#041F3D"));
+                .call(g => g.selectAll(".tick text").style("font-size", "18px").style("fill", "#041F3D").attr("dx", "-0.2em"));
 
             const yAxis_breed_neg = d3.axisLeft(yScale_breed_neg)
                 .tickValues([0, 3, 6, 9, 12, 15])
@@ -356,8 +358,136 @@
                 .call(yAxis_breed_neg)
                 .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
                 .call(g => g.selectAll(".tick line").attr("stroke", "#041F3D").attr("stroke-width", 2))
-                .call(g => g.selectAll(".tick text").style("font-size", "16px").style("fill", "#041F3D"));
+                .call(g => g.selectAll(".tick text").style("font-size", "18px").style("fill", "#041F3D").attr("dx", "-0.2em"));
 
+
+            // --------------------------------------------------
+            // --------------------------------------------------
+            // --------------------------------------------------
+
+            // Bite incidents by age
+            const ageData = await d3.csv("age_df.csv");
+
+            const svg_age = d3.select("#svg-age");
+
+            const width_age = +svg_age.attr("width");
+            const height_age = +svg_age.attr("height");
+            const margin_age = { top: 10, right: 50, bottom: 70, left: 10 };
+            const chartWidth_age = width_age - margin_age.left - margin_age.right;
+            const chartHeight_age = height_age - margin_age.top - margin_age.bottom;
+
+            const g_age = svg_age.append("g")
+                .attr("transform", `translate(${margin_age.left},${margin_age.top})`);
+
+            ageData.forEach(d => {
+                d.age = +d.age;
+                d.bite_versus_population_ratio = +d.bite_versus_population_ratio;
+                d.ageLabel = d.age === 1 ? "≤1" : d.age.toString();
+            });
+
+            // Set up scales
+            const xScale_age = d3.scaleBand()
+                .domain(ageData.map(d => d.ageLabel))
+                .range([0, chartWidth_age])
+                .padding(0.3);
+
+            const maxRatio = d3.max(ageData, d => d.bite_versus_population_ratio);
+            const yScale_age = d3.scaleLinear()
+                .domain([0, maxRatio * 1.1])
+                .range([chartHeight_age, 0]);
+
+            // Add horizontal line at y=1
+            g_age.append("line")
+                .attr("x1", 0)
+                .attr("y1", yScale_age(1))
+                .attr("x2", chartWidth_age)
+                .attr("y2", yScale_age(1))
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "5,5");
+
+            g_age.append("text")
+                .attr("x", chartWidth_age - 10)
+                .attr("y", yScale_age(1) - 5)
+                .attr("text-anchor", "end")
+                .text("1 (average)")
+                .style("font-size", "16px")
+                .style("fill", "#041F3D");
+
+            // Add lollipops
+            const colorScale = d3.scaleThreshold()
+                .domain([0.5, 1.5])
+                .range(["#ffd1a8", "#ff8c42", "#e65c00"]);
+
+            ageData.forEach(d => {
+                const ageGroup = g_age.append("g")
+                    .attr("transform", `translate(${xScale_age(d.ageLabel) + xScale_age.bandwidth()/2},0)`);
+    
+                ageGroup.append("line")
+                    .attr("y1", yScale_age(0))
+                    .attr("y2", yScale_age(d.bite_versus_population_ratio))
+                    .attr("stroke", "#041F3D")
+                    .attr("stroke-width", 2);
+    
+                ageGroup.append("circle")
+                    .attr("cy", yScale_age(d.bite_versus_population_ratio))
+                    .attr("r", 13)
+                    .attr("fill", colorScale(d.bite_versus_population_ratio))
+                    .attr("stroke", "#041F3D")
+                    .attr("stroke-width", 2);
+            });
+
+            // x axis
+            const xAxis = g_age.append("g")
+                .attr("transform", `translate(0,${chartHeight_age})`)
+                .call(d3.axisBottom(xScale_age));
+
+            xAxis.selectAll("text")
+                .style("text-anchor", "middle")
+                .style("font-size", "18px")
+                .style("fill", "#041F3D")
+                .attr("dy", "1em");
+
+            xAxis.append("text")
+                .attr("x", chartWidth_age / 2)
+                .attr("y", 60)
+                .attr("text-anchor", "middle")
+                .text("Age")
+                .style("font-size", "28px")
+                .style("font-weight", "bold")
+                .style("fill", "#041F3D");
+            
+            xAxis.select(".domain")
+                .attr("stroke-width", 2);
+
+            xAxis.selectAll(".tick line")
+                .attr("stroke-width", 2); 
+
+            // y axis
+            const yAxis = g_age.append("g")
+                .attr("transform", `translate(${chartWidth_age},0)`)
+                .call(d3.axisRight(yScale_age).ticks(5));
+
+            yAxis.select(".domain")
+                .attr("stroke-width", 2);
+
+            yAxis.selectAll(".tick line")
+                .attr("stroke-width", 2); 
+
+            yAxis.selectAll("text")
+                .style("font-size", "18px")
+                .style("fill", "#041F3D")
+                .attr("dx", "0.3em");
+
+            g_age.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", chartWidth_age + 40)
+                .attr("x", chartHeight_age / 2)
+                .attr("text-anchor", "middle")
+                .text("Bite Frequency Score")
+                .style("font-size", "28px")
+                .style("font-weight", "bold")
+                .style("fill", "#041F3D");
 
             // --------------------------------------------------
             // --------------------------------------------------
