@@ -866,7 +866,7 @@
         accessToken: mapboxgl.accessToken,
         mapboxgl: mapboxgl,
         marker: true,
-        placeholder: "Search for your location...",
+        placeholder: "Search...",
         zoom: 14
     });
 
@@ -931,7 +931,8 @@
                     },
                     properties: {
                         zip: zip,
-                        number_of_bites: numBites
+                        number_of_bites: numBites,
+                        number_of_dogs: numDogs
                     }
                 });
             }
@@ -946,123 +947,9 @@
 
         map.on("load", () => {
 
-            // ---- ZIP shape layer colored by number_of_dogs ----
-            map.addSource('zipcodes', {
-                type: 'geojson',
-                data: zipGeoJSON
-            });
 
-            map.addLayer({
-    'id': 'zip-dog-fills',
-    'type': 'fill',
-    'source': 'zipcodes',
-    'paint': {
-        'fill-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'number_of_dogs'],
-            0, '#e0f3f8',
-            500, '#abd9e9',
-            2000, '#74add1',
-            5000, '#4575b4'
-        ],
-        'fill-opacity': 0.3
-    }
-});
-
-
-//
-            // map.addLayer({
-            //     'id': 'zip-dog-borders',
-            //     'type': 'line',
-            //     'source': 'zipcodes',
-                
-            //     'paint': {
-            //         'line-color': '#555',
-            //         'line-width': 1
-            //     }
-                
-            // });
-
-            // ---- ZIP dog hover popup ----
-            const dogPopup = new mapboxgl.Popup({
-                closeButton: false,
-                closeOnClick: false
-            });
-
-            map.on('mouseenter', 'zip-dog-fills', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
-                const props = e.features[0].properties;
-                const coordinates = e.lngLat;
-
-                dogPopup
-                    .setLngLat(coordinates)
-                    .setHTML(`<strong>ZIP: ${props.postcode}</strong><br>Dogs: ${props.number_of_dogs}`)
-                    .addTo(map);
-            });
-
-            map.on('mouseleave', 'zip-dog-fills', () => {
-                map.getCanvas().style.cursor = '';
-                dogPopup.remove();
-            });
-
-            // ---- ZIP centroid dots ----
-            map.addSource('zip-centroids', {
-                type: 'geojson',
-                data: zipCentroidGeoJSON
-            });
-
-            map.addLayer({
-                'id': 'zip-centroid-dots',
-                'type': 'circle',
-                'source': 'zip-centroids',
-                'paint': {
-                    'circle-radius': [
-                        'interpolate',
-                        ['linear'],
-                        ['get', 'number_of_bites'],
-                        0, 4,
-                        500, 12
-                    ],
-                   'circle-color': [
-    'interpolate',
-    ['linear'],
-    ['get', 'number_of_bites'],
-    0, '#ffffcc',    // pale yellow
-    50, '#ffeda0',   // soft orange-yellow
-    200, '#feb24c',  // bright orange
-    500, '#f03b20'   // deep orange-red (still orange-toned)
-],
-'circle-opacity': 0.7
-
-
-                }
-            });
-
-            // ---- ZIP dot hover popup ----
-            const zipPopup = new mapboxgl.Popup({
-                closeButton: false,
-                closeOnClick: false
-            });
-
-            map.on('mouseenter', 'zip-centroid-dots', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
-                const props = e.features[0].properties;
-                const coordinates = e.lngLat;
-
-                zipPopup
-                    .setLngLat(coordinates)
-                    .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}`)
-                    .addTo(map);
-            });
-
-            map.on('mouseleave', 'zip-centroid-dots', () => {
-                map.getCanvas().style.cursor = '';
-                zipPopup.remove();
-            });
-
-            // ---- Parks ----
-            map.addSource('parks', {
+                  // ---- Parks ----
+                  map.addSource('parks', {
                 type: 'geojson',
                 data: parkGeoJSON
             });
@@ -1110,6 +997,125 @@
             });
 
         });
+
+            // ---- ZIP shape layer colored by number_of_dogs ----
+            map.addSource('zipcodes', {
+                type: 'geojson',
+                data: zipGeoJSON
+            });
+
+            map.addLayer({
+    'id': 'zip-dog-fills',
+    'type': 'fill',
+    'source': 'zipcodes',
+    'paint': {
+        'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'number_of_dogs'],
+            0, '#e0f3f8',
+            500, '#abd9e9',
+            2000, '#74add1',
+            5000, '#4575b4'
+        ],
+        'fill-opacity': 0.3
+    }
+});
+
+
+//
+            // map.addLayer({
+            //     'id': 'zip-dog-borders',
+            //     'type': 'line',
+            //     'source': 'zipcodes',
+                
+            //     'paint': {
+            //         'line-color': '#555',
+            //         'line-width': 1
+            //     }
+                
+            // });
+
+            // ---- ZIP dog hover popup ----
+            // const dogPopup = new mapboxgl.Popup({
+            //     closeButton: false,
+            //     closeOnClick: false
+            // });
+
+            // map.on('mouseenter', 'zip-dog-fills', (e) => {
+            //     map.getCanvas().style.cursor = 'pointer';
+            //     const props = e.features[0].properties;
+            //     const coordinates = e.lngLat;
+
+            //     dogPopup
+            //         .setLngLat(coordinates)
+            //         .setHTML(`<strong>ZIP: ${props.zip_code}</strong><br>Dogs: ${props.number_of_dogs}`)
+            //         .addTo(map);
+            // });
+
+            map.on('mouseleave', 'zip-dog-fills', () => {
+                map.getCanvas().style.cursor = '';
+                dogPopup.remove();
+            });
+
+            // ---- ZIP centroid dots ----
+            map.addSource('zip-centroids', {
+                type: 'geojson',
+                data: zipCentroidGeoJSON
+            });
+
+            map.addLayer({
+                'id': 'zip-centroid-dots',
+                'type': 'circle',
+                'source': 'zip-centroids',
+                'paint': {
+                    'circle-radius': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'number_of_bites'],
+                        0, 4,
+                        500, 12
+                    ],
+                   'circle-color': [
+    'interpolate',
+    ['linear'],
+    ['get', 'number_of_bites'],
+    0, '#ffffcc',    // pale yellow
+    50, '#ffeda0',   // soft orange-yellow
+    200, '#feb24c',  // bright orange
+    500, '#f03b20'   // deep orange-red (still orange-toned)
+],
+'circle-opacity': 1
+
+
+                }
+            });
+
+            map.moveLayer('zip-centroid-dots');
+
+            // ---- ZIP dot hover popup ----
+            const zipPopup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: false
+            });
+
+            map.on('mouseenter', 'zip-centroid-dots', (e) => {
+                map.getCanvas().style.cursor = 'pointer';
+                const props = e.features[0].properties;
+                const coordinates = e.lngLat;
+
+                zipPopup
+                    .setLngLat(coordinates)
+                    .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}</strong><br>Dogs: ${props.number_of_dogs}`)
+                    .addTo(map);
+            });
+
+            map.on('mouseleave', 'zip-centroid-dots', () => {
+                map.getCanvas().style.cursor = '';
+                zipPopup.remove();
+            });
+
+      
 
     });
 
