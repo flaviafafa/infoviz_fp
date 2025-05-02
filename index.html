@@ -43,63 +43,59 @@
             padding-bottom: 40px;
         }
 
-    .map-container {
-        position: relative;
-        width: 100%;
-        height: 100vh;
-    }
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
 
-    #mapCanvas {
-        width: 80%;
-        height: 80%;
-    }
+        #mapCanvas {
+            width: 80%;
+            height: 80%;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            left: 40px
+        }
 
-    #geocoder-container {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        width: 300px;
-        z-index: 2;
-    }
+        .sidebar {
+            position: absolute;
+            top: 0px;
+            right: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            padding: 12px 16px;
+            z-index: 2;
+        }
 
-    .sidebar {
-        position: absolute;
-        top: 80px;
-        right: 20px;
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        padding: 12px 16px;
-        z-index: 2;
-    }
+        .sidebar button {
+            display: block;
+            width: 180px;
+            margin: 8px 0;
+            padding: 10px 14px;
+            background-color: #ffefda;
+            font-family: 'Baloo 2', cursive;
+            color: black;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    .sidebar button {
-        display: block;
-        width: 180px;
-        margin: 8px 0;
-        padding: 10px 14px;
-        background-color: #4285f4;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+        .sidebar button:hover {
+            background-color: #ebbb7d;
+        }
 
-    .sidebar button:hover {
-        background-color: #3367d6;
-    }
-
-    .sidebar button:active {
-        background-color: #254ba0;
-    }
+        .sidebar button:active {
+            background-color: #254ba0;
+        }
 
 
         #geocoder-container {
             position: absolute;
             top: 10px;
-            left: 10px;
+            left: 50px;
             width: 50%;
             z-index: 1;
         }
@@ -173,12 +169,13 @@
             <div id="mapCanvas"></div>
             <div id="geocoder-container"></div>
             <div id="layer-control" class="sidebar">
-                <button onclick="toggleLayer('zip-centroid-dots')">Dog Bites</button><br>
-                <button onclick="toggleLayer('zip-dog-fills')">Dog Distribution</button><br>
+                <button onclick="toggleLayer('zip-centroid-dots')">Bite Incidents</button><br>
+                <button onclick="toggleLayer('zip-dog-fills')">Dog Population Distribution</button><br>
+
                 <button onclick="toggleLayer('park-fills')">Open Spaces / Parks</button>
-                
+
             </div>
-       
+
         </div>
 
 
@@ -212,9 +209,9 @@
                 .attr("y1", chartHeight_breed / 2)
                 .attr("x2", chartWidth_breed)
                 .attr("y2", chartHeight_breed / 2)
-                .attr("stroke", "#041F3D") 
+                .attr("stroke", "#041F3D")
                 .attr("stroke-width", 2)
-                .lower(); 
+                .lower();
 
             const xScale_breed = d3.scaleBand()
                 .domain(breedData.map(d => d.breed))
@@ -232,7 +229,7 @@
             // Add y-axis titles
             g_breed.append("text")
                 .attr("y", 0)
-                .attr("x", chartWidth_breed/2)
+                .attr("x", chartWidth_breed / 2)
                 .attr("text-anchor", "middle")
                 .text("Bite Frequency Score")
                 .style("font-size", "28px")
@@ -241,7 +238,7 @@
 
             g_breed.append("text")
                 .attr("y", 450)
-                .attr("x", chartWidth_breed/2)
+                .attr("x", chartWidth_breed / 2)
                 .attr("text-anchor", "middle")
                 .text("Owner-Rated Aggressiveness Score")
                 .style("font-size", "28px")
@@ -291,7 +288,7 @@
                 .attr("class", "breed-img")
                 .attr("xlink:href", d => `dog_cartoons/${d.breed.replaceAll(' ', '_')}.png`)
                 .attr("x", -xScale_breed.bandwidth() * 0.2)
-                .attr("y", chartHeight_breed/2 - xScale_breed.bandwidth() * 0.65)
+                .attr("y", chartHeight_breed / 2 - xScale_breed.bandwidth() * 0.65)
                 .attr("width", xScale_breed.bandwidth() * 1.4)
                 .attr("height", xScale_breed.bandwidth() * 1.4);
 
@@ -337,7 +334,7 @@
                 .style("font-size", "18px");
 
             // Hover-over functions
-            breedGroups.on("mouseover", function(event, d) {
+            breedGroups.on("mouseover", function (event, d) {
 
                 d3.select(this).selectAll("rect")
                     .attr("opacity", 1)
@@ -349,25 +346,25 @@
                     .attr("opacity", 0.3);
 
                 const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
-    
+
                 const tooltipWidth = 480;
                 const tooltipHeight = 150;
                 const padding = 10;
-    
+
                 let x;
                 if (mouseX > width_breed - tooltipWidth - padding) {
                     x = mouseX - tooltipWidth - padding;
                 } else {
                     x = mouseX + padding;
                 }
-    
+
                 let y;
-                if (mouseY < chartHeight_breed / 2) { 
+                if (mouseY < chartHeight_breed / 2) {
                     y = mouseY + padding;
                 } else {
                     y = mouseY - tooltipHeight - padding;
                 }
-    
+
                 // Do boundary checks
                 y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
 
@@ -386,39 +383,39 @@
                 tooltip.select(".tooltip-agg")
                     .html(`Owner-Rated Aggressiveness: <tspan style="font-weight:bold">${d.aggresiveness_score} out of 15</tspan>`);
             })
-            .on("mousemove", function(event) {
-                const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
-    
-                const tooltipWidth = 480;
-                const tooltipHeight = 150;
-                const padding = 10;
-    
-                let x;
-                if (mouseX > width_breed - tooltipWidth - padding) {
-                    x = mouseX - tooltipWidth - padding;
-                } else {
-                    x = mouseX + padding;
-                }
-    
-                let y;
-                if (mouseY < chartHeight_breed / 2) {
-                    y = mouseY + padding;
-                } else {
-                    y = mouseY - tooltipHeight - padding;
-                }
-    
-                // Move tooltip
-                y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
+                .on("mousemove", function (event) {
+                    const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
 
-                tooltip.attr("transform", `translate(${x},${y})`);
-            })
-            .on("mouseout", function() {
-                breedGroups.selectAll("rect")
-                    .attr("opacity", 0.8)
-                    .attr("stroke", "none");
+                    const tooltipWidth = 480;
+                    const tooltipHeight = 150;
+                    const padding = 10;
 
-                tooltip.style("opacity", 0);
-            });
+                    let x;
+                    if (mouseX > width_breed - tooltipWidth - padding) {
+                        x = mouseX - tooltipWidth - padding;
+                    } else {
+                        x = mouseX + padding;
+                    }
+
+                    let y;
+                    if (mouseY < chartHeight_breed / 2) {
+                        y = mouseY + padding;
+                    } else {
+                        y = mouseY - tooltipHeight - padding;
+                    }
+
+                    // Move tooltip
+                    y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
+
+                    tooltip.attr("transform", `translate(${x},${y})`);
+                })
+                .on("mouseout", function () {
+                    breedGroups.selectAll("rect")
+                        .attr("opacity", 0.8)
+                        .attr("stroke", "none");
+
+                    tooltip.style("opacity", 0);
+                });
 
             // Create axes
             const yAxis_breed = d3.axisLeft(yScale_breed)
@@ -662,7 +659,7 @@
                 .data(ageData)
                 .join("g")
                 .attr("class", "lollipop-group")
-                .attr("transform", d => `translate(${xScale_age(d.ageLabel) + xScale_age.bandwidth()/2},0)`);
+                .attr("transform", d => `translate(${xScale_age(d.ageLabel) + xScale_age.bandwidth() / 2},0)`);
 
             lollipopGroups.append("line")
                 .attr("class", "lollipop-line")
@@ -699,12 +696,12 @@
                 .style("font-weight", "bold")
                 .style("fill", "#041F3D")
                 .style("font-family", "'Baloo 2', cursive");
-            
+
             xAxis.select(".domain")
                 .attr("stroke-width", 2);
 
             xAxis.selectAll(".tick line")
-                .attr("stroke-width", 2); 
+                .attr("stroke-width", 2);
 
             // y axis
             const yAxis = g_age.append("g")
@@ -715,7 +712,7 @@
                 .attr("stroke-width", 2);
 
             yAxis.selectAll(".tick line")
-                .attr("stroke-width", 2); 
+                .attr("stroke-width", 2);
 
             yAxis.selectAll("text")
                 .style("font-size", "18px")
@@ -724,13 +721,13 @@
 
             g_age.append("text")
                 .attr("y", -20)
-                .attr("x", chartWidth_age-90)
+                .attr("x", chartWidth_age - 90)
                 .attr("text-anchor", "middle")
                 .text("Bite Frequency Score")
                 .style("font-size", "28px")
                 .style("font-weight", "bold")
                 .style("fill", "#041F3D");
-            
+
             // Tooltip
             const ageTooltip = g_age.append("g")
                 .attr("class", "age-tooltip")
@@ -754,12 +751,12 @@
                 .style("font-family", "'Baloo 2', cursive");
 
             // Hover-over events
-            lollipopGroups.on("mouseover", function(event, d) {
+            lollipopGroups.on("mouseover", function (event, d) {
                 const borderColor = colorScale(d.bite_versus_population_ratio);
                 d3.select(this).select(".lollipop-circle")
                     .attr("r", 17)
                     .attr("stroke-width", 4);
-    
+
                 d3.select(this).select(".lollipop-line")
                     .attr("stroke-width", 4);
 
@@ -795,14 +792,14 @@
                     line.push(word);
                     tempDiv.innerHTML = line.join(' ');
                     const testWidth = tempDiv.offsetWidth;
-    
-                    if (testWidth > 360 && line.length > 1) { 
+
+                    if (testWidth > 360 && line.length > 1) {
                         line.pop();
                         tooltipText.append("tspan")
                             .attr("x", xPos)
                             .attr("y", initialYPos + (lineNumber * lineHeight))
                             .html(line.join(' '));
-        
+
                         line = [word];
                         lineNumber++;
                     }
@@ -821,7 +818,7 @@
                 const tooltipHeight = 70 + (lineNumber * lineHeight);
                 ageTooltip.select("rect")
                     .attr("height", tooltipHeight);
-                
+
                 const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
                 const tooltipWidth = 400;
                 const tooltipHeightValue = tooltipHeight;
@@ -841,34 +838,34 @@
                 ageTooltip.style("opacity", 1)
                     .attr("transform", `translate(${x},${y})`);
             })
-            .on("mouseout", function() {
-                d3.select(this).select(".lollipop-circle")
-                    .attr("r", 13)
-                    .attr("stroke-width", 2);
-    
-                d3.select(this).select(".lollipop-line")
-                    .attr("stroke-width", 2);
+                .on("mouseout", function () {
+                    d3.select(this).select(".lollipop-circle")
+                        .attr("r", 13)
+                        .attr("stroke-width", 2);
 
-                ageTooltip.style("opacity", 0);
-            })
-            .on("mousemove", function(event) {
-                const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
-                const tooltipWidth = 400;
-                const tooltipHeight = +ageTooltip.select("rect").attr("height");
-    
-                let x = mouseX + 10;
-                if (x + tooltipWidth > width_age) {
-                    x = width_age - tooltipWidth - 10;
-                }
-    
-                let y = mouseY + 10;
-                if (y + tooltipHeight > height_age) {
-                    y = height_age - tooltipHeight - 10;
-                }
-                y = Math.max(10, y);
-    
-                ageTooltip.attr("transform", `translate(${x},${y})`);
-            })
+                    d3.select(this).select(".lollipop-line")
+                        .attr("stroke-width", 2);
+
+                    ageTooltip.style("opacity", 0);
+                })
+                .on("mousemove", function (event) {
+                    const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
+                    const tooltipWidth = 400;
+                    const tooltipHeight = +ageTooltip.select("rect").attr("height");
+
+                    let x = mouseX + 10;
+                    if (x + tooltipWidth > width_age) {
+                        x = width_age - tooltipWidth - 10;
+                    }
+
+                    let y = mouseY + 10;
+                    if (y + tooltipHeight > height_age) {
+                        y = height_age - tooltipHeight - 10;
+                    }
+                    y = Math.max(10, y);
+
+                    ageTooltip.attr("transform", `translate(${x},${y})`);
+                })
 
             // --------------------------------------------------
             // --------------------------------------------------
@@ -917,6 +914,7 @@
 
             console.log(monthlyData);
 
+            // ---------- TIME CHART ----------
             const svg_time = d3.select("#svg-time");
             const width_time = +svg_time.attr("width");
             const height_time = +svg_time.attr("height");
@@ -946,17 +944,9 @@
                 .attr("stroke-width", 2)
                 .attr("d", time_bite_line);
 
-
-
-            //x-Axis-time
             const xAxis_time = d3.axisBottom(xScale_time)
                 .ticks(monthlyData.length)
-                .tickFormat((d, i) => {
-                    if (i % 12 === 0) {
-                        return monthlyData[i].monthYear;
-                    }
-                    return '';
-                });
+                .tickFormat((d, i) => i % 12 === 0 ? monthlyData[i].monthYear : '');
 
             g_time.append("g")
                 .attr("transform", `translate(0,${chartHeight_time})`)
@@ -965,11 +955,9 @@
                 .attr("transform", "rotate(45)")
                 .style("text-anchor", "start");
 
-            // Y-axis-time
             const yAxis_time = d3.axisLeft(yScale_time);
             g_time.append("g").call(yAxis_time);
 
-            // Y-axis-time label
             svg_time.append("text")
                 .attr("transform", `rotate(-90)`)
                 .attr("y", 10)
@@ -979,7 +967,6 @@
                 .style("font-size", "14px")
                 .text("Number of Bites");
 
-            // X-axis-time label
             svg_time.append("text")
                 .attr("x", margin_time.left + chartWidth_time / 2)
                 .attr("y", height_time - 5)
@@ -988,6 +975,7 @@
                 .text("Time (Month-Year)");
 
 
+            // ---------- TEMP CHART ----------
             const svg_temp = d3.select("#svg-temp");
             const width_temp = +svg_temp.attr("width");
             const height_temp = +svg_temp.attr("height");
@@ -1017,23 +1005,9 @@
                 .attr("stroke-width", 2)
                 .attr("d", time_temp_line);
 
-
-            g_temp.append("g")
-                .attr("transform", `translate(0,${chartHeight_time})`)
-                .call(xAxis_time)
-                .selectAll("text")
-                .attr("transform", "rotate(45)")
-                .style("text-anchor", "start");
-
-            //x-Axis-temp
             const xAxis_temp = d3.axisBottom(xScale_temp)
                 .ticks(monthlyData.length)
-                .tickFormat((d, i) => {
-                    if (i % 12 === 0) {
-                        return monthlyData[i].monthYear;
-                    }
-                    return '';
-                });
+                .tickFormat((d, i) => i % 12 === 0 ? monthlyData[i].monthYear : '');
 
             g_temp.append("g")
                 .attr("transform", `translate(0,${chartHeight_temp})`)
@@ -1042,11 +1016,9 @@
                 .attr("transform", "rotate(45)")
                 .style("text-anchor", "start");
 
-            // Y-axis
             const yAxis_temp = d3.axisLeft(yScale_temp);
             g_temp.append("g").call(yAxis_temp);
 
-            // Y-axis label
             svg_temp.append("text")
                 .attr("transform", `rotate(-90)`)
                 .attr("y", 10)
@@ -1056,7 +1028,6 @@
                 .style("font-size", "14px")
                 .text("Average Temperature(F)");
 
-            // X-axis label
             svg_temp.append("text")
                 .attr("x", margin_temp.left + chartWidth_temp / 2)
                 .attr("y", height_temp - 5)
@@ -1065,6 +1036,7 @@
                 .text("Time (Month-Year)");
 
 
+            // ---------- PRECIP CHART ----------
             const svg_precip = d3.select("#svg-precip");
             const width_precip = +svg_precip.attr("width");
             const height_precip = +svg_precip.attr("height");
@@ -1094,16 +1066,9 @@
                 .attr("stroke-width", 2)
                 .attr("d", time_precip_line);
 
-
-            //x-Axis-temp
             const xAxis_precip = d3.axisBottom(xScale_precip)
                 .ticks(monthlyData.length)
-                .tickFormat((d, i) => {
-                    if (i % 12 === 0) {
-                        return monthlyData[i].monthYear;
-                    }
-                    return '';
-                });
+                .tickFormat((d, i) => i % 12 === 0 ? monthlyData[i].monthYear : '');
 
             g_precip.append("g")
                 .attr("transform", `translate(0,${chartHeight_precip})`)
@@ -1112,18 +1077,9 @@
                 .attr("transform", "rotate(45)")
                 .style("text-anchor", "start");
 
-            g_precip.append("g")
-                .attr("transform", `translate(0,${chartHeight_precip})`)
-                .call(xAxis_precip)
-                .selectAll("text")
-                .attr("transform", "rotate(45)")
-                .style("text-anchor", "start");
-
-            // Y-axis
             const yAxis_precip = d3.axisLeft(yScale_precip);
             g_precip.append("g").call(yAxis_precip);
-            d => d.avgprecip
-            // Y-axis label
+
             svg_precip.append("text")
                 .attr("transform", `rotate(-90)`)
                 .attr("y", 10)
@@ -1133,301 +1089,345 @@
                 .style("font-size", "14px")
                 .text("Average Precipitation");
 
-            // X-axis label
             svg_precip.append("text")
                 .attr("x", margin_precip.left + chartWidth_precip / 2)
                 .attr("y", height_precip - 5)
                 .style("text-anchor", "middle")
                 .style("font-size", "14px")
                 .text("Time (Month-Year)");
+
+
+            // ============ VERTICAL LINE INTERACTION ============
+            const allSVGs = [
+                { svg: svg_time, g: g_time, xScale: xScale_time, height: chartHeight_time },
+                { svg: svg_temp, g: g_temp, xScale: xScale_temp, height: chartHeight_temp },
+                { svg: svg_precip, g: g_precip, xScale: xScale_precip, height: chartHeight_precip }
+            ];
+
+            allSVGs.forEach(({ g, height }) => {
+                g.append("line")
+                    .attr("class", "vline")
+                    .attr("y1", 0)
+                    .attr("y2", height)
+                    .attr("stroke", "gray")
+                    .attr("stroke-dasharray", "4")
+                    .style("opacity", 0);
+            });
+
+            // Add hover behavior to show vertical lines during mousemove
+            allSVGs.forEach(({ svg, g, xScale }) => {
+                svg.on("mousemove", function (event) {
+                    const [mouseX] = d3.pointer(event);
+                    const chartX = mouseX - 70; // Adjust for margin
+
+                    const index = Math.round(xScale.invert(chartX));
+                    if (index >= 0 && index < monthlyData.length) {
+                        allSVGs.forEach(({ g, xScale }) => {
+                            g.select(".vline")
+                                .attr("x1", xScale(index))
+                                .attr("x2", xScale(index))
+                                .style("opacity", 1);
+                        });
+                    }
+                });
+
+                svg.on("mouseleave", function () {
+                    allSVGs.forEach(({ g }) => {
+                        g.select(".vline").style("opacity", 0);
+                    });
+                });
+            });
+
         }
 
         requestData();
     </script>
 
-<script>
-    // Map framework
-    mapboxgl.accessToken = 'pk.eyJ1Ijoia3g2NCIsImEiOiJjbGkzd2E1dmsxMzNoM2twY2p2azF0bGVlIn0.t_v73kaAMUtoGBPESpw3uA';
+    <script>
+        // Map framework
+        mapboxgl.accessToken = 'pk.eyJ1Ijoia3g2NCIsImEiOiJjbGkzd2E1dmsxMzNoM2twY2p2azF0bGVlIn0.t_v73kaAMUtoGBPESpw3uA';
 
-    const map = new mapboxgl.Map({
-        container: 'mapCanvas',
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [-74.006, 40.7128],
-        zoom: 10
-    });
-
-    // Mapbox Geocoder 
-    const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        marker: true,
-        placeholder: "Search for your location...",
-        zoom: 14
-    });
-
-    document.getElementById('geocoder-container').appendChild(geocoder.onAdd(map));
-
-    let jsonData = null;
-    let selectMode = false;
-    let marker = null;
-
-    map.on("click", (e) => {
-        if (!selectMode) return;
-
-        const { lng, lat } = e.lngLat;
-
-        if (marker) {
-            marker.setLngLat([lng, lat]);
-        } else {
-            marker = new mapboxgl.Marker()
-                .setLngLat([lng, lat])
-                .addTo(map);
-        }
-
-        map.flyTo({ center: [lng, lat], zoom: 15 });
-
-        document.getElementById("location-info").innerText = `Selected Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-
-        selectMode = false;
-    });
-
-    // Load the CSV and GeoJSON files
-    Promise.all([
-        d3.csv("zip_df.csv"),
-        d3.json("nyc_zip_codes_with_centroids.geojson"),
-        d3.json("nyc_open_space.geojson")
-    ]).then(([zipData, zipGeoJSON, parkGeoJSON]) => {
-
-        const biteByZip = {};
-        const dogsByZip = {};
-
-        zipData.forEach(d => {
-            biteByZip[d.zip_code] = +d.number_of_bites;
-            dogsByZip[d.zip_code] = +d.number_of_dogs;
+        const map = new mapboxgl.Map({
+            container: 'mapCanvas',
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [-74.006, 40.7128],
+            zoom: 10
         });
 
-        // ------ Build centroid point features for ZIP codes ------
-        const zipCentroidFeatures = [];
+        // Mapbox Geocoder 
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: true,
+            placeholder: "Search for your location...",
+            zoom: 14
+        });
 
-        zipGeoJSON.features.forEach(f => {
-            const zip = f.properties.postcode || f.properties.ZIPCODE || f.properties.zip || f.properties.postalCode;
-            const numBites = biteByZip[zip] || 0;
-            const numDogs = dogsByZip[zip] || 0;
-            f.properties.number_of_bites = numBites;
-            f.properties.number_of_dogs = numDogs;
+        document.getElementById('geocoder-container').appendChild(geocoder.onAdd(map));
 
-            // Add point for centroid layer if centroid coords exist
-            if (f.properties.centroid_lon && f.properties.centroid_lat) {
-                zipCentroidFeatures.push({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [f.properties.centroid_lon, f.properties.centroid_lat]
-                    },
-                    properties: {
-                        zip: zip,
-                        number_of_bites: numBites
+        let jsonData = null;
+        let selectMode = false;
+        let marker = null;
+
+        map.on("click", (e) => {
+            if (!selectMode) return;
+
+            const { lng, lat } = e.lngLat;
+
+            if (marker) {
+                marker.setLngLat([lng, lat]);
+            } else {
+                marker = new mapboxgl.Marker()
+                    .setLngLat([lng, lat])
+                    .addTo(map);
+            }
+
+            map.flyTo({ center: [lng, lat], zoom: 15 });
+
+            document.getElementById("location-info").innerText = `Selected Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+            selectMode = false;
+        });
+
+        // Load the CSV and GeoJSON files
+        Promise.all([
+            d3.csv("zip_df.csv"),
+            d3.json("nyc_zip_codes_with_centroids.geojson"),
+            d3.json("nyc_open_space.geojson")
+        ]).then(([zipData, zipGeoJSON, parkGeoJSON]) => {
+
+            const biteByZip = {};
+            const dogsByZip = {};
+
+            zipData.forEach(d => {
+                biteByZip[d.zip_code] = +d.number_of_bites;
+                dogsByZip[d.zip_code] = +d.number_of_dogs;
+            });
+
+            // ------ Build centroid point features for ZIP codes ------
+            const zipCentroidFeatures = [];
+
+            zipGeoJSON.features.forEach(f => {
+                const zip = f.properties.postcode || f.properties.ZIPCODE || f.properties.zip || f.properties.postalCode;
+                const numBites = biteByZip[zip] || 0;
+                const numDogs = dogsByZip[zip] || 0;
+                f.properties.number_of_bites = numBites;
+                f.properties.number_of_dogs = numDogs;
+
+                // Add point for centroid layer if centroid coords exist
+                if (f.properties.centroid_lon && f.properties.centroid_lat) {
+                    zipCentroidFeatures.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [f.properties.centroid_lon, f.properties.centroid_lat]
+                        },
+                        properties: {
+                            zip: zip,
+                            number_of_bites: numBites,
+                            number_of_dogs: numDogs
+                        }
+                    });
+                }
+            });
+
+            const zipCentroidGeoJSON = {
+                type: 'FeatureCollection',
+                features: zipCentroidFeatures
+            };
+
+            console.log("Number of ZIP dots created:", zipCentroidFeatures.length);
+
+            map.on("load", () => {
+
+                // ---- ZIP shape layer colored by number_of_dogs ----
+                map.addSource('zipcodes', {
+                    type: 'geojson',
+                    data: zipGeoJSON
+                });
+
+                map.addLayer({
+                    'id': 'zip-dog-fills',
+                    'type': 'fill',
+                    'source': 'zipcodes',
+                    'paint': {
+                        'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'number_of_dogs'],
+                            0, '#e0f3f8',
+                            500, '#abd9e9',
+                            2000, '#74add1',
+                            5000, '#4575b4'
+                        ],
+                        'fill-opacity': 0.3
                     }
                 });
+
+
+                //
+                // map.addLayer({
+                //     'id': 'zip-dog-borders',
+                //     'type': 'line',
+                //     'source': 'zipcodes',
+
+                //     'paint': {
+                //         'line-color': '#555',
+                //         'line-width': 1
+                //     }
+
+                // });
+
+                // // ---- ZIP dog hover popup ----
+                // const dogPopup = new mapboxgl.Popup({
+                //     closeButton: false,
+                //     closeOnClick: false
+                // });
+
+                // map.on('mouseenter', 'zip-dog-fills', (e) => {
+                //     map.getCanvas().style.cursor = 'pointer';
+                //     const props = e.features[0].properties;
+                //     const coordinates = e.lngLat;
+
+                //     dogPopup
+                //         .setLngLat(coordinates)
+                //         .setHTML(`<strong>ZIP: ${props.postcode}</strong><br>Dogs: ${props.number_of_dogs}`)
+                //         .addTo(map);
+                // });
+
+                // map.on('mouseleave', 'zip-dog-fills', () => {
+                //     map.getCanvas().style.cursor = '';
+                //     dogPopup.remove();
+                // });
+
+                // ---- ZIP centroid dots ----
+                map.addSource('zip-centroids', {
+                    type: 'geojson',
+                    data: zipCentroidGeoJSON
+                });
+
+                map.addLayer({
+                    'id': 'zip-centroid-dots',
+                    'type': 'circle',
+                    'source': 'zip-centroids',
+                    'paint': {
+                        'circle-radius': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'number_of_bites'],
+                            0, 4,
+                            500, 12
+                        ],
+                        'circle-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'number_of_bites'],
+                            0, '#ffffcc',    // pale yellow
+                            50, '#ffeda0',   // soft orange-yellow
+                            200, '#feb24c',  // bright orange
+                            500, '#f03b20'   // deep orange-red (still orange-toned)
+                        ],
+                        'circle-opacity': 0.7
+
+
+                    }
+                });
+
+                // ---- ZIP dot hover popup ----
+                const zipPopup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+
+                map.on('mouseenter', 'zip-centroid-dots', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const props = e.features[0].properties;
+                    const coordinates = e.lngLat;
+
+                    zipPopup
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}<br>Dogs: ${props.number_of_dogs}`)
+
+                        .addTo(map);
+                });
+
+                map.on('mouseleave', 'zip-centroid-dots', () => {
+                    map.getCanvas().style.cursor = '';
+                    zipPopup.remove();
+                });
+
+                // ---- Parks ----
+                map.addSource('parks', {
+                    type: 'geojson',
+                    data: parkGeoJSON
+                });
+
+                map.addLayer({
+                    'id': 'park-fills',
+                    'type': 'fill',
+                    'source': 'parks',
+                    'paint': {
+                        'fill-color': '#72c27e',
+                        'fill-opacity': 0.4
+                    }
+                });
+
+                // map.addLayer({
+                //     'id': 'park-borders',
+                //     'type': 'line',
+                //     'source': 'parks',
+                //     'paint': {
+                //         'line-color': '#2e8b57',
+                //         'line-width': 1
+                //     }
+                // });
+
+                // ---- Park hover popup ----
+                const parkPopup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+
+                map.on('mouseenter', 'park-fills', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const parkName = e.features[0].properties.PARK_NAME || "Unnamed Park";
+                    const coordinates = e.lngLat;
+
+                    parkPopup
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>${parkName}</strong>`)
+                        .addTo(map);
+                });
+
+                map.on('mouseleave', 'park-fills', () => {
+                    map.getCanvas().style.cursor = '';
+                    parkPopup.remove();
+                });
+
+            });
+
+        });
+
+        // Layer toggle function
+        function toggleLayer(layerBaseId) {
+            const layerIds = [layerBaseId];
+
+            // If the layer is a 'fills' layer, add the corresponding 'borders' layer
+            if (layerBaseId.includes('fills')) {
+                layerIds.push(layerBaseId.replace('fills', 'borders'));
             }
-        });
 
-        const zipCentroidGeoJSON = {
-            type: 'FeatureCollection',
-            features: zipCentroidFeatures
-        };
-
-        console.log("Number of ZIP dots created:", zipCentroidFeatures.length);
-
-        map.on("load", () => {
-
-            // ---- ZIP shape layer colored by number_of_dogs ----
-            map.addSource('zipcodes', {
-                type: 'geojson',
-                data: zipGeoJSON
+            layerIds.forEach(layer => {
+                if (!map.getLayer(layer)) return;
+                const visibility = map.getLayoutProperty(layer, 'visibility');
+                map.setLayoutProperty(layer, 'visibility',
+                    (visibility === 'visible' || visibility === undefined) ? 'none' : 'visible'
+                );
             });
-
-            map.addLayer({
-    'id': 'zip-dog-fills',
-    'type': 'fill',
-    'source': 'zipcodes',
-    'paint': {
-        'fill-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'number_of_dogs'],
-            0, '#e0f3f8',
-            500, '#abd9e9',
-            2000, '#74add1',
-            5000, '#4575b4'
-        ],
-        'fill-opacity': 0.3
-    }
-});
+        }
 
 
-//
-            // map.addLayer({
-            //     'id': 'zip-dog-borders',
-            //     'type': 'line',
-            //     'source': 'zipcodes',
-                
-            //     'paint': {
-            //         'line-color': '#555',
-            //         'line-width': 1
-            //     }
-                
-            // });
-
-            // ---- ZIP dog hover popup ----
-            const dogPopup = new mapboxgl.Popup({
-                closeButton: false,
-                closeOnClick: false
-            });
-
-            map.on('mouseenter', 'zip-dog-fills', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
-                const props = e.features[0].properties;
-                const coordinates = e.lngLat;
-
-                dogPopup
-                    .setLngLat(coordinates)
-                    .setHTML(`<strong>ZIP: ${props.postcode}</strong><br>Dogs: ${props.number_of_dogs}`)
-                    .addTo(map);
-            });
-
-            map.on('mouseleave', 'zip-dog-fills', () => {
-                map.getCanvas().style.cursor = '';
-                dogPopup.remove();
-            });
-
-            // ---- ZIP centroid dots ----
-            map.addSource('zip-centroids', {
-                type: 'geojson',
-                data: zipCentroidGeoJSON
-            });
-
-            map.addLayer({
-                'id': 'zip-centroid-dots',
-                'type': 'circle',
-                'source': 'zip-centroids',
-                'paint': {
-                    'circle-radius': [
-                        'interpolate',
-                        ['linear'],
-                        ['get', 'number_of_bites'],
-                        0, 4,
-                        500, 12
-                    ],
-                   'circle-color': [
-    'interpolate',
-    ['linear'],
-    ['get', 'number_of_bites'],
-    0, '#ffffcc',    // pale yellow
-    50, '#ffeda0',   // soft orange-yellow
-    200, '#feb24c',  // bright orange
-    500, '#f03b20'   // deep orange-red (still orange-toned)
-],
-'circle-opacity': 0.7
-
-
-                }
-            });
-
-            // ---- ZIP dot hover popup ----
-            const zipPopup = new mapboxgl.Popup({
-                closeButton: false,
-                closeOnClick: false
-            });
-
-            map.on('mouseenter', 'zip-centroid-dots', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
-                const props = e.features[0].properties;
-                const coordinates = e.lngLat;
-
-                zipPopup
-                    .setLngLat(coordinates)
-                    .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}`)
-                    .addTo(map);
-            });
-
-            map.on('mouseleave', 'zip-centroid-dots', () => {
-                map.getCanvas().style.cursor = '';
-                zipPopup.remove();
-            });
-
-            // ---- Parks ----
-            map.addSource('parks', {
-                type: 'geojson',
-                data: parkGeoJSON
-            });
-
-            map.addLayer({
-                'id': 'park-fills',
-                'type': 'fill',
-                'source': 'parks',
-                'paint': {
-                    'fill-color': '#72c27e',
-                    'fill-opacity': 0.4
-                }
-            });
-
-            // map.addLayer({
-            //     'id': 'park-borders',
-            //     'type': 'line',
-            //     'source': 'parks',
-            //     'paint': {
-            //         'line-color': '#2e8b57',
-            //         'line-width': 1
-            //     }
-            // });
-
-            // ---- Park hover popup ----
-            const parkPopup = new mapboxgl.Popup({
-                closeButton: false,
-                closeOnClick: false
-            });
-
-            map.on('mouseenter', 'park-fills', (e) => {
-                map.getCanvas().style.cursor = 'pointer';
-                const parkName = e.features[0].properties.PARK_NAME || "Unnamed Park";
-                const coordinates = e.lngLat;
-
-                parkPopup
-                    .setLngLat(coordinates)
-                    .setHTML(`<strong>${parkName}</strong>`)
-                    .addTo(map);
-            });
-
-            map.on('mouseleave', 'park-fills', () => {
-                map.getCanvas().style.cursor = '';
-                parkPopup.remove();
-            });
-
-        });
-
-    });
-
-    // Layer toggle function
-    function toggleLayer(layerBaseId) {
-    const layerIds = [layerBaseId];
-
-    // If the layer is a 'fills' layer, add the corresponding 'borders' layer
-    if (layerBaseId.includes('fills')) {
-        layerIds.push(layerBaseId.replace('fills', 'borders'));
-    }
-
-    layerIds.forEach(layer => {
-        if (!map.getLayer(layer)) return;
-        const visibility = map.getLayoutProperty(layer, 'visibility');
-        map.setLayoutProperty(layer, 'visibility',
-            (visibility === 'visible' || visibility === undefined) ? 'none' : 'visible'
-        );
-    });
-}
-
-
-</script>
+    </script>
 
 
 
