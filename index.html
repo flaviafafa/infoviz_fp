@@ -78,7 +78,7 @@
     <div class="session colored-bg">
         <div id="container-age" class="colored-bg container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-            <svg id="svg-age" height="520" width="680"></svg>
+            <svg id="svg-age" height="540" width="720"></svg>
         </div>
     </div>
 
@@ -379,7 +379,7 @@
 
             const width_age = +svg_age.attr("width");
             const height_age = +svg_age.attr("height");
-            const margin_age = { top: 10, right: 50, bottom: 70, left: 10 };
+            const margin_age = { top: 10, right: 90, bottom: 80, left: 10 };
             const chartWidth_age = width_age - margin_age.left - margin_age.right;
             const chartHeight_age = height_age - margin_age.top - margin_age.bottom;
 
@@ -415,10 +415,10 @@
 
             g_age.append("text")
                 .attr("x", chartWidth_age - 10)
-                .attr("y", yScale_age(1) - 5)
+                .attr("y", yScale_age(1) - 12)
                 .attr("text-anchor", "end")
                 .text("1 (average)")
-                .style("font-size", "16px")
+                .style("font-size", "22px")
                 .style("fill", "#041F3D");
 
             // Add lollipops
@@ -457,12 +457,13 @@
 
             xAxis.append("text")
                 .attr("x", chartWidth_age / 2)
-                .attr("y", 60)
+                .attr("y", 65)
                 .attr("text-anchor", "middle")
                 .text("Age")
                 .style("font-size", "28px")
                 .style("font-weight", "bold")
-                .style("fill", "#041F3D");
+                .style("fill", "#041F3D")
+                .style("font-family", "'Baloo 2', cursive");
             
             xAxis.select(".domain")
                 .attr("stroke-width", 2);
@@ -487,9 +488,9 @@
                 .attr("dx", "0.3em");
 
             g_age.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", chartWidth_age + 40)
-                .attr("x", chartHeight_age / 2)
+                .attr("transform", "rotate(-270)")
+                .attr("y", -chartHeight_age-240)
+                .attr("x", chartWidth_age/2-70)
                 .attr("text-anchor", "middle")
                 .text("Bite Frequency Score")
                 .style("font-size", "28px")
@@ -501,8 +502,8 @@
             // --------------------------------------------------
 
 
-// Bite incidents by time
-const timeData = await d3.csv("time_df.csv");
+            // Bite incidents by time
+            const timeData = await d3.csv("time_df.csv");
             console.log(timeData);
 
             const monthlyTotals = {};
