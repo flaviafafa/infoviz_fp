@@ -134,7 +134,7 @@
     <div class="session">
         <div id="container-gender" class="container-centered">
             <h2>TITLE TITLE TITLE TITLE TITLE TITLE </h2>
-
+            <svg id="svg-gender" height="380" width="520"></svg>
         </div>
     </div>
 
@@ -444,6 +444,161 @@
                 .call(g => g.selectAll(".tick line").attr("stroke", "#041F3D").attr("stroke-width", 2))
                 .call(g => g.selectAll(".tick text").style("font-size", "18px").style("fill", "#041F3D").attr("dx", "-0.2em"));
 
+            // --------------------------------------------------
+            // --------------------------------------------------
+            // --------------------------------------------------
+
+            // Bite incidents by gender x spay & neuter
+
+            const genderData = await d3.csv("gender_spay_df.csv");
+    
+            genderData.forEach(d => {
+                d.spayed_or_neutered = d.spayed_or_neutered === "True";
+                d.bite_versus_population_ratio = +d.bite_versus_population_ratio;
+            });
+
+            const svg_gender = d3.select("#svg-gender");
+            const width_gender = +svg_gender.attr("width");
+            const height_gender = +svg_gender.attr("height");
+            const margin_gender = { top: 40, right: 90, bottom: 80, left: 80 };
+            const chartWidth_gender = width_gender - margin_gender.left - margin_gender.right;
+            const chartHeight_gender = height_gender - margin_gender.top - margin_gender.bottom;
+
+            const g_gender = svg_gender.append("g")
+                .attr("transform", `translate(${margin_gender.left},${margin_gender.top})`);
+
+            // Set up scales
+            const maxValue = d3.max(genderData, d => d.bite_versus_population_ratio);
+            const xScale_gender = d3.scaleLinear()
+                .domain([0, maxValue * 1.1])
+                .range([0, chartWidth_gender]);
+
+            const yScale_gender = d3.scaleBand()
+                .domain(["F", "M"])
+                .range([0, chartHeight_gender])
+                .padding(0.5);
+
+            const bg_gender = g_gender.append("g")
+                .attr("class", "background-group");
+
+            // Add vertical line at x=1 (average)
+            bg_gender.append("line")
+                .attr("x1", xScale_gender(1))
+                .attr("y1", 0)
+                .attr("x2", xScale_gender(1))
+                .attr("y2", chartHeight_gender)
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "5,5");
+
+            bg_gender.append("text")
+                .attr("x", xScale_gender(1) + 5)
+                .attr("y", 20)
+                .text("1 (average)")
+                .style("font-size", "20px")
+                .style("fill", "#041F3D");
+
+            // Create lollipops
+            const fg_gender = g_gender.append("g")
+                .attr("class", "foreground-group");
+
+            genderData.sort((a, b) => b.bite_versus_population_ratio - a.bite_versus_population_ratio);
+
+            genderData.forEach(d => {
+                const group = fg_gender.append("g").attr("class", "gender-group");
+
+                const circleX = xScale_gender(d.bite_versus_population_ratio);
+                const circleY = yScale_gender(d.gender) + yScale_gender.bandwidth() / 2;
+
+                group.append("line")
+                    .attr("x1", 0)
+                    .attr("y1", circleY)
+                    .attr("x2", circleX)
+                    .attr("y2", circleY)
+                    .attr("stroke", "#041F3D")
+                    .attr("stroke-width", 2);
+
+                group.append("circle")
+                    .attr("cx", circleX)
+                    .attr("cy", circleY)
+                    .attr("r", 18)
+                    .attr("fill", d.spayed_or_neutered ? "#3ec9c1" : "#ff8c42")
+                    .attr("stroke", "#041F3D")
+                    .attr("stroke-width", 2);
+
+                group.append("text")
+                    .attr("x", circleX)
+                    .attr("y", circleY)
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", "middle")
+                    .text(d3.format(".1f")(d.bite_versus_population_ratio))
+                    .style("font-size", "20px")
+                    .style("fill", "#041F3D")
+                    .style("font-weight", "bold")
+                    .style("pointer-events", "none");
+            });
+
+            // Add y-axis
+            const yAxis_gender = d3.axisLeft(yScale_gender)
+                .tickFormat(d => d === "F" ? "Female" : "Male");
+
+            g_gender.append("g")
+                .call(yAxis_gender)
+                .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
+                .call(g => g.selectAll(".tick text").style("font-size", "18px").style("fill", "#041F3D").style("font-weight", "bold"));
+
+            // Add x-axis
+            const xAxis_gender = d3.axisBottom(xScale_gender)
+                .ticks(5);
+
+            g_gender.append("g")
+                .attr("transform", `translate(0,${chartHeight_gender})`)
+                .call(xAxis_gender)
+                .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
+                .call(g => g.selectAll(".tick text").style("font-size", "16px").style("fill", "#041F3D"));
+
+            g_gender.append("text")
+                .attr("x", chartWidth_gender / 2)
+                .attr("y", chartHeight_gender + 60)
+                .attr("text-anchor", "middle")
+                .text("Bite Frequency Score")
+                .style("font-size", "20px")
+                .style("font-weight", "bold")
+                .style("fill", "#041F3D");
+
+            // Add legend
+            const legend = g_gender.append("g")
+                .attr("transform", `translate(${chartWidth_gender - 100}, 20)`);
+
+            legend.append("circle")
+                .attr("cx", 10)
+                .attr("cy", 10)
+                .attr("r", 10)
+                .attr("fill", "#3ec9c1")
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 1.5);
+
+            legend.append("text")
+                .attr("x", 25)
+                .attr("y", 15)
+                .text("Spayed/Neutered")
+                .style("font-size", "18px")
+                .style("fill", "#041F3D");
+
+            legend.append("circle")
+                .attr("cx", 10)
+                .attr("cy", 40)
+                .attr("r", 10)
+                .attr("fill", "#ff8c42")
+                .attr("stroke", "#041F3D")
+                .attr("stroke-width", 1.5);
+
+            legend.append("text")
+                .attr("x", 25)
+                .attr("y", 45)
+                .text("Not Spayed/Neutered")
+                .style("font-size", "18px")
+                .style("fill", "#041F3D");
 
             // --------------------------------------------------
             // --------------------------------------------------
