@@ -112,6 +112,7 @@
     <!--Introduction-->
     <div class="session container-centered">
         <div>
+            <img src="images/Bite.png" alt="Dog Bite Sequence" width="600" style="margin-top: -40px; margin-bottom: -40px;">
             <h1 style="font-weight:800; font-size: 36px;">
                 Bitten by the Numbers: A Data Story on NYC Dogs
             </h1>
@@ -406,7 +407,7 @@
             // Add images
             breedGroups.append("image")
                 .attr("class", "breed-img")
-                .attr("xlink:href", d => `dog_cartoons/${d.breed.replaceAll(' ', '_')}.png`)
+                .attr("xlink:href", d => `images/${d.breed.replaceAll(' ', '_')}.png`)
                 .attr("x", -xScale_breed.bandwidth() * 0.2)
                 .attr("y", chartHeight_breed / 2 - xScale_breed.bandwidth() * 0.65)
                 .attr("width", xScale_breed.bandwidth() * 1.4)
@@ -467,7 +468,7 @@
                 const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
                 const tooltipWidth = 440;
                 const tooltipHeight = 130;
-                const padding = 15; 
+                const padding = 5; 
                 const barPadding = 20; 
 
                 let x;
@@ -480,7 +481,7 @@
                 }
 
                 let y;
-                if (mouseY < chartHeight_breed / 2) {
+                if (mouseY < chartHeight_breed / 2 - 100) {
                     y = mouseY + padding;
                 } else {
                     y = mouseY - tooltipHeight - padding;
@@ -497,7 +498,7 @@
                     .attr("transform", `translate(${x},${y})`);
 
                 tooltip.select(".tooltip-img")
-                    .attr("xlink:href", `dog_cartoons/${d.breed.replaceAll(' ', '_')}.png`);
+                    .attr("xlink:href", `images/${d.breed.replaceAll(' ', '_')}.png`);
 
                 tooltip.select(".tooltip-title")
                     .text(d.breed);
@@ -523,7 +524,7 @@
                 }
 
                 let y;
-                if (mouseY < chartHeight_breed / 2) {
+                if (mouseY < chartHeight_breed / 2 - 100) {
                     y = mouseY + padding;
                 } else {
                     y = mouseY - tooltipHeight - padding;
