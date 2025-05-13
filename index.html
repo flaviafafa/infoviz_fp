@@ -47,60 +47,100 @@
         }
 
         .map-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
+  display: flex;
+  flex-direction: row;
+  width: 70%;
+  height: 70vh;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+#mapCanvas {
+  flex: 1;
+  height: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  overflow-y: auto;
+  z-index: 2;
+}
+
+#geocoder-container {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 50%;
+  z-index: 3;
+}
+
+
+
+        #image-button-grid {
+            margin-top: auto;
         }
 
-        #mapCanvas {
-            width: 80%;
-            height: 80%;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            left: 40px
+
+
+
+        .discrete-legend {
+            margin: 8px 0 16px 0;
         }
 
-        .sidebar {
-            position: absolute;
-            top: 0px;
-            right: 40px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            padding: 12px 16px;
-            z-index: 2;
+        .legend-bar {
+            display: flex;
+            height: 14px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 4px;
+            box-shadow: inset 0 0 0 1px #ccc;
         }
 
-        .sidebar button {
-            display: block;
-            width: 180px;
-            margin: 8px 0;
-            padding: 10px 14px;
-            background-color: #ffefda;
-            font-family: 'Baloo 2', cursive;
-            color: black;
+        .legend-step {
+            flex: 1;
+        }
+
+        .legend-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #041F3D;
+            padding: 0 2px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .image-grid button {
             border: none;
-            border-radius: 6px;
-            font-size: 15px;
+            background: none;
+            padding: 0;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        .sidebar button:hover {
-            background-color: #ebbb7d;
+        .image-grid img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
         }
 
-        .sidebar button:active {
-            background-color: #254ba0;
-        }
-
-
-        #geocoder-container {
-            position: absolute;
-            top: 10px;
-            left: 50px;
-            width: 50%;
-            z-index: 1;
+        .image-grid img:hover {
+            transform: scale(1.05);
         }
     </style>
 
@@ -112,7 +152,8 @@
     <!--Introduction-->
     <div class="session container-centered">
         <div>
-            <img src="images/Bite.png" alt="Dog Bite Sequence" width="600" style="margin-top: -40px; margin-bottom: -40px;">
+            <img src="images/Bite.png" alt="Dog Bite Sequence" width="600"
+                style="margin-top: -40px; margin-bottom: -40px;">
             <h1 style="font-weight:800; font-size: 36px;">
                 Bitten by the Numbers: A Data Story on NYC Dogs
             </h1>
@@ -170,17 +211,17 @@
 
         <div class="map-container">
             <div id="mapCanvas"></div>
-            <div id="geocoder-container"></div>
             <div id="layer-control" class="sidebar">
-                <button onclick="toggleLayer('zip-centroid-dots')">Bite Incidents</button><br>
-                <button onclick="toggleLayer('zip-dog-fills')">Dog Population Distribution</button><br>
-
-                <button onclick="toggleLayer('park-fills')">Open Spaces / Parks</button>
-
+              <div id="layer-buttons"></div>
+              <h4 style="margin-bottom: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #041F3D;">
+                Tap a dog to discover its top territory for bites
+              </h4>
+              
+              <div id="image-button-grid" class="image-grid"></div>
             </div>
-
-        </div>
-
+            <div id="geocoder-container"></div>
+          </div>
+          
 
     </div>
 
@@ -207,7 +248,7 @@
             const svg_breed = d3.select("#svg-breed");
             const width_breed = +svg_breed.attr("width");
             const height_breed = +svg_breed.attr("height");
-            const margin_breed = { top: 90, right: 20, bottom: 60, left: 40 }; 
+            const margin_breed = { top: 90, right: 20, bottom: 60, left: 40 };
             const chartWidth_breed = width_breed - margin_breed.left - margin_breed.right;
             const chartHeight_breed = height_breed - margin_breed.top - margin_breed.bottom;
 
@@ -216,54 +257,54 @@
 
             // Update chart based on current sort
             function updateChart() {
-                const sortedData = [...breedData].sort((a, b) => 
-                    currentSort === "bite" ? 
-                        d3.descending(+a.bite_score, +b.bite_score) : 
+                const sortedData = [...breedData].sort((a, b) =>
+                    currentSort === "bite" ?
+                        d3.descending(+a.bite_score, +b.bite_score) :
                         d3.descending(+a.aggresiveness_score, +b.aggresiveness_score)
                 );
-    
+
                 xScale_breed.domain(sortedData.map(d => d.breed));
-    
+
                 // Transition for bars and images
                 const t = svg_breed.transition().duration(750);
-    
+
                 g_breed.selectAll(".breed-group")
                     .data(sortedData, d => d.breed)
                     .transition(t)
                     .attr("transform", d => `translate(${xScale_breed(d.breed)},0)`);
-    
+
                 g_breed.selectAll(".bar-bite")
                     .data(sortedData, d => d.breed)
                     .transition(t)
                     .attr("y", d => yScale_breed(d.bite_score))
                     .attr("height", d => chartHeight_breed / 2 - yScale_breed(d.bite_score));
-    
+
                 g_breed.selectAll(".bar-agg")
                     .data(sortedData, d => d.breed)
                     .transition(t)
                     .attr("height", d => yScale_breed_neg(d.aggresiveness_score));
-    
+
                 g_breed.selectAll(".breed-image")
                     .data(sortedData, d => d.breed)
                     .transition(t)
                     .attr("cx", xScale_breed.bandwidth() / 2);
-    
+
                 g_breed.selectAll(".breed-img")
                     .data(sortedData, d => d.breed)
                     .transition(t)
                     .attr("x", -xScale_breed.bandwidth() * 0.2);
-    
+
                 updateSortToggle();
             }
 
             // Create or update the sort toggle button
             function updateSortToggle() {
                 g_breed.selectAll(".sort-toggle").remove();
-    
+
                 const toggle = g_breed.append("g")
                     .attr("class", "sort-toggle")
                     .attr("transform", `translate(${chartWidth_breed / 2 - 250}, -85)`);
-    
+
                 // Add toggle background
                 toggle.append("rect")
                     .attr("width", 500)
@@ -283,7 +324,7 @@
                     .style("fill", "#FF5800")
                     .style("font-size", "18px")
                     .style("font-weight", "bold");
-    
+
                 // Add two options
                 toggle.append("text")
                     .attr("x", 170)
@@ -294,8 +335,8 @@
                     .style("font-size", "18px")
                     .style("font-weight", currentSort === "bite" ? "bold" : "normal")
                     .style("cursor", "pointer")
-                    .on("mouseover", function() {
-                        d3.select(this).style("cursor", "pointer"); 
+                    .on("mouseover", function () {
+                        d3.select(this).style("cursor", "pointer");
                     })
                     .on("click", () => {
                         if (currentSort !== "bite") {
@@ -303,7 +344,7 @@
                             updateChart();
                         }
                     });
-    
+
                 toggle.append("text")
                     .attr("x", 360)
                     .attr("y", 27.5)
@@ -313,7 +354,7 @@
                     .style("font-size", "18px")
                     .style("font-weight", currentSort === "agg" ? "bold" : "normal")
                     .style("cursor", "pointer")
-                    .on("mouseover", function() {
+                    .on("mouseover", function () {
                         d3.select(this).style("cursor", "pointer");
                     })
                     .on("click", () => {
@@ -468,8 +509,8 @@
                 const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
                 const tooltipWidth = 440;
                 const tooltipHeight = 130;
-                const padding = 5; 
-                const barPadding = 20; 
+                const padding = 5;
+                const barPadding = 20;
 
                 let x;
                 if (mouseX > width_breed - tooltipWidth - padding) {
@@ -509,39 +550,39 @@
                 tooltip.select(".tooltip-agg")
                     .html(`Owner-Rated Aggressiveness: <tspan style="font-weight:bold">${d.aggresiveness_score} out of 15</tspan>`);
             })
-            .on("mousemove", function (event) {
-                const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
-                const tooltipWidth = 440;
-                const tooltipHeight = 130;
-                const padding = 15;
-                const barPadding = 20;
+                .on("mousemove", function (event) {
+                    const [mouseX, mouseY] = d3.pointer(event, svg_breed.node());
+                    const tooltipWidth = 440;
+                    const tooltipHeight = 130;
+                    const padding = 15;
+                    const barPadding = 20;
 
-                let x;
-                if (mouseX > width_breed - tooltipWidth - padding) {
-                    x = mouseX - tooltipWidth - barPadding - 50;
-                } else {
-                    x = mouseX + padding - 20;
-                }
+                    let x;
+                    if (mouseX > width_breed - tooltipWidth - padding) {
+                        x = mouseX - tooltipWidth - barPadding - 50;
+                    } else {
+                        x = mouseX + padding - 20;
+                    }
 
-                let y;
-                if (mouseY < chartHeight_breed / 2 - 100) {
-                    y = mouseY + padding;
-                } else {
-                    y = mouseY - tooltipHeight - padding;
-                }
+                    let y;
+                    if (mouseY < chartHeight_breed / 2 - 100) {
+                        y = mouseY + padding;
+                    } else {
+                        y = mouseY - tooltipHeight - padding;
+                    }
 
-                x = Math.max(padding, Math.min(x, width_breed - tooltipWidth - padding));
-                y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
+                    x = Math.max(padding, Math.min(x, width_breed - tooltipWidth - padding));
+                    y = Math.max(padding, Math.min(y, height_breed - tooltipHeight - padding));
 
-                tooltip.attr("transform", `translate(${x},${y})`);
-            })
-            .on("mouseout", function () {
-                breedGroups.selectAll("rect")
-                    .attr("opacity", 0.8)
-                    .attr("stroke", "none");
+                    tooltip.attr("transform", `translate(${x},${y})`);
+                })
+                .on("mouseout", function () {
+                    breedGroups.selectAll("rect")
+                        .attr("opacity", 0.8)
+                        .attr("stroke", "none");
 
-                tooltip.style("opacity", 0);
-            });
+                    tooltip.style("opacity", 0);
+                });
 
             // Create axes
             const yAxis_breed = d3.axisLeft(yScale_breed)
@@ -606,7 +647,7 @@
             // Add vertical line at x=1 (average)
             const bg_gender = g_gender.append("g")
                 .attr("class", "background-group");
-    
+
             bg_gender.append("line")
                 .attr("x1", xScale_gender(1))
                 .attr("y1", 0)
@@ -635,7 +676,7 @@
                 .append("g")
                 .attr("class", "gender-group");
 
-            genderGroups.each(function(d) {
+            genderGroups.each(function (d) {
                 const group = d3.select(this);
                 const circleX = xScale_gender(d.bite_versus_population_ratio);
                 const circleY = yScale_gender(d.gender) + yScale_gender.bandwidth() / 2;
@@ -679,9 +720,9 @@
                 .call(yAxis_gender)
                 .call(g => g.select(".domain").attr("stroke", "#041F3D").attr("stroke-width", 2))
                 .call(g => g.selectAll(".tick text")
-                            .style("font-size", "16px")
-                            .style("fill", "#041F3D")
-                            .style("font-weight", "bold"));
+                    .style("font-size", "16px")
+                    .style("fill", "#041F3D")
+                    .style("font-weight", "bold"));
 
             // Add x-axis
             const xAxis_gender = d3.axisBottom(xScale_gender).ticks(5);
@@ -692,7 +733,7 @@
                 .call(g => g.select(".domain")
                     .attr("stroke", "#041F3D")
                     .attr("stroke-width", 2))
-                .call(g => g.selectAll(".tick line")       
+                .call(g => g.selectAll(".tick line")
                     .attr("stroke", "#041F3D")
                     .attr("stroke-width", 2))
                 .call(g => g.selectAll(".tick text")
@@ -765,7 +806,7 @@
                 .style("font-family", "'Baloo 2', cursive");
 
             // Hover-over events
-            genderGroups.on("mouseover", function(event, d) {
+            genderGroups.on("mouseover", function (event, d) {
                 const borderColor = d.spayed_or_neutered ? "#3ec9c1" : "#ff8c42";
                 d3.select(this).select(".gender-circle")
                     .attr("r", 20)
@@ -838,7 +879,7 @@
                 const padding = 10;
                 const pointerOffset = 15;
 
-                let x = mouseX + tooltipWidth + padding > width_gender 
+                let x = mouseX + tooltipWidth + padding > width_gender
                     ? mouseX - tooltipWidth - pointerOffset
                     : mouseX + pointerOffset;
 
@@ -848,30 +889,30 @@
                 genderTooltip.style("opacity", 1)
                     .attr("transform", `translate(${x},${y})`);
             })
-            .on("mouseout", function() {
-                d3.select(this).select(".gender-circle")
-                    .attr("r", 16)
-                    .attr("stroke-width", 2);
+                .on("mouseout", function () {
+                    d3.select(this).select(".gender-circle")
+                        .attr("r", 16)
+                        .attr("stroke-width", 2);
 
-                genderTooltip.style("opacity", 0);
-            })
-            .on("mousemove", function(event) {
-                let [mouseX, mouseY] = d3.pointer(event, svg_gender.node());
-                mouseX = mouseX - 60;
-                const tooltipWidth = 300;
-                const tooltipHeight = +genderTooltip.select("rect").attr("height");
-                const padding = 10;
-                const pointerOffset = 15;
+                    genderTooltip.style("opacity", 0);
+                })
+                .on("mousemove", function (event) {
+                    let [mouseX, mouseY] = d3.pointer(event, svg_gender.node());
+                    mouseX = mouseX - 60;
+                    const tooltipWidth = 300;
+                    const tooltipHeight = +genderTooltip.select("rect").attr("height");
+                    const padding = 10;
+                    const pointerOffset = 15;
 
-                let x = mouseX + tooltipWidth + padding > width_gender 
-                    ? mouseX - tooltipWidth - pointerOffset
-                    : mouseX + pointerOffset;
+                    let x = mouseX + tooltipWidth + padding > width_gender
+                        ? mouseX - tooltipWidth - pointerOffset
+                        : mouseX + pointerOffset;
 
-                let y = mouseY - (tooltipHeight / 2);
-                y = Math.max(padding, Math.min(y, height_gender - tooltipHeight - padding));
+                    let y = mouseY - (tooltipHeight / 2);
+                    y = Math.max(padding, Math.min(y, height_gender - tooltipHeight - padding));
 
-                genderTooltip.attr("transform", `translate(${x},${y})`);
-            });
+                    genderTooltip.attr("transform", `translate(${x},${y})`);
+                });
 
 
             // --------------------------------------------------
@@ -1097,45 +1138,45 @@
                 const tooltipHeight = +ageTooltip.select("rect").attr("height");
                 const padding = 10;
 
-                let x = mouseX + tooltipWidth + padding > width_age 
+                let x = mouseX + tooltipWidth + padding > width_age
                     ? Math.max(padding, mouseX - tooltipWidth - padding)
                     : Math.max(padding, mouseX + padding);
 
                 let y = mouseY + tooltipHeight + padding > height_age
                     ? Math.max(padding, mouseY - tooltipHeight - padding)
                     : Math.max(padding, mouseY + padding);
-    
+
                 y = Math.max(padding, y);
 
                 ageTooltip.style("opacity", 1)
-                    .attr("transform", `translate(${x},${y-40})`);
+                    .attr("transform", `translate(${x},${y - 40})`);
             })
-            .on("mouseout", function () {
-                d3.select(this).select(".lollipop-circle")
-                    .attr("r", 10)
-                    .attr("stroke-width", 2);
+                .on("mouseout", function () {
+                    d3.select(this).select(".lollipop-circle")
+                        .attr("r", 10)
+                        .attr("stroke-width", 2);
 
-                d3.select(this).select(".lollipop-line")
-                    .attr("stroke-width", 2);
+                    d3.select(this).select(".lollipop-line")
+                        .attr("stroke-width", 2);
 
-                ageTooltip.style("opacity", 0);
-            })
-            .on("mousemove", function (event) {
-                const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
-                const tooltipWidth = 350;
-                const tooltipHeight = +ageTooltip.select("rect").attr("height");
-                const padding = 10;
+                    ageTooltip.style("opacity", 0);
+                })
+                .on("mousemove", function (event) {
+                    const [mouseX, mouseY] = d3.pointer(event, svg_age.node());
+                    const tooltipWidth = 350;
+                    const tooltipHeight = +ageTooltip.select("rect").attr("height");
+                    const padding = 10;
 
-                let x = mouseX + tooltipWidth + padding > width_age 
-                    ? Math.max(padding, mouseX - tooltipWidth - padding)
-                    : Math.max(padding, mouseX + padding);
+                    let x = mouseX + tooltipWidth + padding > width_age
+                        ? Math.max(padding, mouseX - tooltipWidth - padding)
+                        : Math.max(padding, mouseX + padding);
 
-                let y = mouseY + tooltipHeight + padding > height_age
-                    ? Math.max(padding, mouseY - tooltipHeight - padding)
-                    : Math.max(padding, mouseY + padding);
+                    let y = mouseY + tooltipHeight + padding > height_age
+                        ? Math.max(padding, mouseY - tooltipHeight - padding)
+                        : Math.max(padding, mouseY + padding);
 
-                ageTooltip.attr("transform", `translate(${x},${y-40})`);
-            })
+                    ageTooltip.attr("transform", `translate(${x},${y - 40})`);
+                })
 
             // --------------------------------------------------
             // --------------------------------------------------
@@ -1414,6 +1455,27 @@
     </script>
 
     <script>
+
+        const imageFilenames = [
+            "American_Bulldog.png",
+            "Australian_Shepherd.png",
+            "Beagle.png",
+            "Bernese_Mountain_Dog.png",
+            "Boston_Terrier.png",
+            "Boxer.png",
+            "Cane_Corso.png",
+            "Doberman_Pinscher.png",
+            "French_Bulldog.png",
+            "German_Shepherd.png",
+            "German_Shorthaired_Pointer.png",
+            "Golden_Retriever.png",
+            "Great_Dane.png",
+            "Labrador_Retriever.png",
+            "Pembroke_Welsh_Corgi.png",
+            "Rottweiler.png",
+            "Siberian_Husky.png"
+        ];
+
         // Map framework
         mapboxgl.accessToken = 'pk.eyJ1Ijoia3g2NCIsImEiOiJjbGkzd2E1dmsxMzNoM2twY2p2azF0bGVlIn0.t_v73kaAMUtoGBPESpw3uA';
 
@@ -1424,7 +1486,6 @@
             zoom: 10
         });
 
-        // Mapbox Geocoder 
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl,
@@ -1459,7 +1520,10 @@
             selectMode = false;
         });
 
-        // Load the CSV and GeoJSON files
+        let zipCentroidGeoJSON = null;
+
+
+        // Load the  files
         Promise.all([
             d3.csv("zip_df.csv"),
             d3.json("nyc_zip_codes_with_centroids.geojson"),
@@ -1472,19 +1536,20 @@
             zipData.forEach(d => {
                 biteByZip[d.zip_code] = +d.number_of_bites;
                 dogsByZip[d.zip_code] = +d.number_of_dogs;
+                d.top_biter_by_bite_ratio = d.top_biter_by_bite_ratio?.trim();
             });
 
-            // ------ Build centroid point features for ZIP codes ------
             const zipCentroidFeatures = [];
 
             zipGeoJSON.features.forEach(f => {
                 const zip = f.properties.postcode || f.properties.ZIPCODE || f.properties.zip || f.properties.postalCode;
+                const record = zipData.find(d => d.zip_code === zip);
                 const numBites = biteByZip[zip] || 0;
                 const numDogs = dogsByZip[zip] || 0;
+                const topBiter = record?.top_biter_by_bite_ratio || null;
                 f.properties.number_of_bites = numBites;
                 f.properties.number_of_dogs = numDogs;
 
-                // Add point for centroid layer if centroid coords exist
                 if (f.properties.centroid_lon && f.properties.centroid_lat) {
                     zipCentroidFeatures.push({
                         type: 'Feature',
@@ -1495,13 +1560,14 @@
                         properties: {
                             zip: zip,
                             number_of_bites: numBites,
-                            number_of_dogs: numDogs
+                            number_of_dogs: numDogs,
+                            top_biter_by_bite_ratio: topBiter
                         }
                     });
                 }
             });
 
-            const zipCentroidGeoJSON = {
+            zipCentroidGeoJSON = {
                 type: 'FeatureCollection',
                 features: zipCentroidFeatures
             };
@@ -1510,7 +1576,56 @@
 
             map.on("load", () => {
 
-                // ---- ZIP shape layer colored by number_of_dogs ----
+
+                // ---- Parks layer ----
+                map.addSource('parks', {
+                    type: 'geojson',
+                    data: parkGeoJSON
+                });
+
+                map.addLayer({
+                    'id': 'park-fills',
+                    'type': 'fill',
+                    'source': 'parks',
+                    'paint': {
+                        'fill-color': '#72c27e',
+                        'fill-opacity': 0.6
+                    }
+                });
+
+                // map.addLayer({
+                //     'id': 'park-borders',
+                //     'type': 'line',
+                //     'source': 'parks',
+                //     'paint': {
+                //         'line-color': '#2e8b57',
+                //         'line-width': 1
+                //     }
+                // });
+
+                const parkPopup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+
+                map.on('mouseenter', 'park-fills', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const parkName = e.features[0].properties.PARK_NAME || "Unnamed Park";
+                    const coordinates = e.lngLat;
+
+                    parkPopup
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>${parkName}</strong>`)
+                        .addTo(map);
+                });
+
+                map.on('mouseleave', 'park-fills', () => {
+                    map.getCanvas().style.cursor = '';
+                    parkPopup.remove();
+                });
+
+
+                // ---- ZIP shape layer ---
                 map.addSource('zipcodes', {
                     type: 'geojson',
                     data: zipGeoJSON
@@ -1525,50 +1640,19 @@
                             'interpolate',
                             ['linear'],
                             ['get', 'number_of_dogs'],
-                            0, '#e0f3f8',
-                            500, '#abd9e9',
-                            2000, '#74add1',
-                            5000, '#4575b4'
+                            0, '#ffffcc',
+                            500, '#a1dab4',
+                            2000, '#41b6c4',
+                            4000, '#2c7fb8',
+                            6000, '#08306b'
                         ],
                         'fill-opacity': 0.3
+
                     }
                 });
 
 
-                //
-                // map.addLayer({
-                //     'id': 'zip-dog-borders',
-                //     'type': 'line',
-                //     'source': 'zipcodes',
 
-                //     'paint': {
-                //         'line-color': '#555',
-                //         'line-width': 1
-                //     }
-
-                // });
-
-                // // ---- ZIP dog hover popup ----
-                // const dogPopup = new mapboxgl.Popup({
-                //     closeButton: false,
-                //     closeOnClick: false
-                // });
-
-                // map.on('mouseenter', 'zip-dog-fills', (e) => {
-                //     map.getCanvas().style.cursor = 'pointer';
-                //     const props = e.features[0].properties;
-                //     const coordinates = e.lngLat;
-
-                //     dogPopup
-                //         .setLngLat(coordinates)
-                //         .setHTML(`<strong>ZIP: ${props.postcode}</strong><br>Dogs: ${props.number_of_dogs}`)
-                //         .addTo(map);
-                // });
-
-                // map.on('mouseleave', 'zip-dog-fills', () => {
-                //     map.getCanvas().style.cursor = '';
-                //     dogPopup.remove();
-                // });
 
                 // ---- ZIP centroid dots ----
                 map.addSource('zip-centroids', {
@@ -1592,14 +1676,16 @@
                             'interpolate',
                             ['linear'],
                             ['get', 'number_of_bites'],
-                            0, '#ffffcc',    // pale yellow
-                            50, '#ffeda0',   // soft orange-yellow
-                            200, '#feb24c',  // bright orange
-                            500, '#f03b20'   // deep orange-red (still orange-toned)
+                            0, '#ffe082',
+                            50, '#feb24c',
+                            200, '#fd8d3c',
+                            400, '#f03b20',
+                            600, '#bd0026'
                         ],
                         'circle-opacity': 0.7
-
-
+                        ,
+                        'circle-stroke-color': '#ffffff',
+                        'circle-stroke-width': 1.5
                     }
                 });
 
@@ -1626,75 +1712,190 @@
                     zipPopup.remove();
                 });
 
-                // ---- Parks ----
-                map.addSource('parks', {
+                map.addSource('breed-icon-source', {
                     type: 'geojson',
-                    data: parkGeoJSON
-                });
-
-                map.addLayer({
-                    'id': 'park-fills',
-                    'type': 'fill',
-                    'source': 'parks',
-                    'paint': {
-                        'fill-color': '#72c27e',
-                        'fill-opacity': 0.4
+                    data: {
+                        type: 'FeatureCollection',
+                        features: []
                     }
                 });
 
-                // map.addLayer({
-                //     'id': 'park-borders',
-                //     'type': 'line',
-                //     'source': 'parks',
-                //     'paint': {
-                //         'line-color': '#2e8b57',
-                //         'line-width': 1
-                //     }
-                // });
-
-                // ---- Park hover popup ----
-                const parkPopup = new mapboxgl.Popup({
-                    closeButton: false,
-                    closeOnClick: false
+                map.addLayer({
+                    id: 'breed-icon-layer',
+                    type: 'symbol',
+                    source: 'breed-icon-source',
+                    layout: {
+                        'icon-image': ['get', 'icon'],
+                        'icon-size': 0.05,
+                        'icon-allow-overlap': true
+                    }
                 });
 
-                map.on('mouseenter', 'park-fills', (e) => {
-                    map.getCanvas().style.cursor = 'pointer';
-                    const parkName = e.features[0].properties.PARK_NAME || "Unnamed Park";
-                    const coordinates = e.lngLat;
 
-                    parkPopup
-                        .setLngLat(coordinates)
-                        .setHTML(`<strong>${parkName}</strong>`)
-                        .addTo(map);
+
+                imageFilenames.forEach(filename => {
+                    const name = filename.replace('.png', '');
+                    map.loadImage(`images/${filename}`, (error, image) => {
+                        if (error) return console.error(`Image ${filename} failed to load:`, error);
+                        if (!map.hasImage(name)) {
+                            map.addImage(name, image);
+                        }
+                    });
                 });
 
-                map.on('mouseleave', 'park-fills', () => {
-                    map.getCanvas().style.cursor = '';
-                    parkPopup.remove();
-                });
+
 
             });
 
         });
 
-        // Layer toggle function
-        function toggleLayer(layerBaseId) {
+
+        function toggleLayer(checkbox, layerBaseId) {
             const layerIds = [layerBaseId];
 
-            // If the layer is a 'fills' layer, add the corresponding 'borders' layer
             if (layerBaseId.includes('fills')) {
                 layerIds.push(layerBaseId.replace('fills', 'borders'));
             }
 
             layerIds.forEach(layer => {
                 if (!map.getLayer(layer)) return;
-                const visibility = map.getLayoutProperty(layer, 'visibility');
-                map.setLayoutProperty(layer, 'visibility',
-                    (visibility === 'visible' || visibility === undefined) ? 'none' : 'visible'
-                );
+                map.setLayoutProperty(layer, 'visibility', checkbox.checked ? 'visible' : 'none');
             });
         }
+
+        function createLegend({ label, layerId, colors, thresholds }) {
+            const container = document.getElementById("layer-buttons");
+
+            const checkboxLabel = document.createElement("label");
+            checkboxLabel.innerHTML = `<input type="checkbox" onchange="toggleLayer(this, '${layerId}')" checked> ${label}`;
+            container.appendChild(checkboxLabel);
+
+            const legendWrapper = document.createElement("div");
+            legendWrapper.className = "discrete-legend";
+
+            const legendBar = document.createElement("div");
+            legendBar.className = "legend-bar";
+            colors.forEach(color => {
+                const step = document.createElement("div");
+                step.className = "legend-step";
+                step.style.background = color;
+                legendBar.appendChild(step);
+            });
+            legendWrapper.appendChild(legendBar);
+
+            const labelRow = document.createElement("div");
+            labelRow.className = "legend-labels";
+            thresholds.forEach(value => {
+                const span = document.createElement("span");
+                span.textContent = value;
+                labelRow.appendChild(span);
+            });
+            legendWrapper.appendChild(labelRow);
+
+            container.appendChild(legendWrapper);
+        }
+
+
+        createLegend({
+            label: "Bite Incidents",
+            layerId: "zip-centroid-dots",
+            colors: ["#ffe082", "#feb24c", "#fd8d3c", "#f03b20", "#bd0026"],
+            thresholds: ["0", "50", "200", "400", "600+"]
+        });
+
+
+
+        createLegend({
+            label: "Dog Population Distribution",
+            layerId: "zip-dog-fills",
+            colors: ["#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#08306b"],
+            thresholds: ["0", "500", "2000", "4000", "6000+"]
+        });
+
+
+        createLegend({
+            label: "Open Spaces / Parks",
+            layerId: "park-fills",
+            colors: ["#ffffff", "#72c27e"],
+            thresholds: ["Other Areas", "Open Spaces / Parks"]
+        });
+
+
+        let activeBreed = null;
+
+        function updateBreedIconLayer(breed) {
+  // If clicked breed is already active, clear it
+  if (activeBreed === breed) {
+    map.getSource('breed-icon-source').setData({
+      type: 'FeatureCollection',
+      features: []
+    });
+    activeBreed = null;
+    return;
+  }
+
+  // Otherwise update to new breed
+  activeBreed = breed;
+
+  const filteredFeatures = zipCentroidGeoJSON.features.filter(f =>
+    f.properties.top_biter_by_bite_ratio === breed
+  ).map(f => ({
+    type: 'Feature',
+    geometry: f.geometry,
+    properties: {
+      icon: breed.replace(/ /g, '_')
+    }
+  }));
+
+  map.getSource('breed-icon-source').setData({
+    type: 'FeatureCollection',
+    features: filteredFeatures
+  });
+}
+
+        const grid = document.getElementById('image-button-grid');
+
+
+        imageFilenames.forEach(filename => {
+            const iconId = filename.replace('.png', '');
+            map.loadImage(`images/${filename}`, (error, image) => {
+                if (error) {
+                    console.warn(`Could not load image ${filename}:`, error);
+                    return;
+                }
+                if (!map.hasImage(iconId)) {
+                    map.addImage(iconId, image);
+                }
+            });
+        });
+
+        imageFilenames.forEach(filename => {
+            const breedName = filename.replace('.png', '').replace(/_/g, ' ');
+
+            const btn = document.createElement('button');
+            btn.style.display = 'flex';
+            btn.style.flexDirection = 'column';
+            btn.style.alignItems = 'center';
+            btn.style.padding = '0';
+
+            const img = document.createElement('img');
+            img.src = `images/${filename}`;
+            img.alt = breedName;
+
+            const label = document.createElement('span');
+            label.textContent = breedName;
+            label.style.fontSize = '12px';
+            label.style.marginTop = '4px';
+            label.style.color = '#041F3D';
+            label.style.textAlign = 'center';
+
+            btn.appendChild(img);
+            btn.appendChild(label);
+            btn.onclick = () => updateBreedIconLayer(breedName);
+            grid.appendChild(btn);
+        });
+
+
 
 
     </script>
