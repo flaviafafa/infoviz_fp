@@ -47,40 +47,40 @@
         }
 
         .map-container {
-  display: flex;
-  flex-direction: row;
-  width: 70%;
-  height: 70vh;
-  margin: 0 auto;
-  box-sizing: border-box;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
+            display: flex;
+            flex-direction: row;
+            width: 70%;
+            height: 70vh;
+            margin: 0 auto;
+            box-sizing: border-box;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
 
-#mapCanvas {
-  flex: 1;
-  height: 100%;
-}
+        #mapCanvas {
+            flex: 1;
+            height: 100%;
+        }
 
-.sidebar {
-  width: 250px;
-  background-color: rgba(255, 255, 255, 0.9);
-  display: flex;
-  flex-direction: column;
-  padding: 12px 16px;
-  overflow-y: auto;
-  z-index: 2;
-}
+        .sidebar {
+            width: 250px;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            padding: 12px 16px;
+            overflow-y: auto;
+            z-index: 2;
+        }
 
-#geocoder-container {
-  position: absolute;
-  top: 10px;
-  left: 20px;
-  width: 50%;
-  z-index: 3;
-}
+        #geocoder-container {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 50%;
+            z-index: 3;
+        }
 
 
 
@@ -191,12 +191,16 @@
     <div class="session">
         <div id="container-time" class="container-centered">
             <h2>4. Do Dog Bites Spike in Summer—Right Alongside Ice Cream Sales?</h2>
-            <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 50px">
-                <svg id="svg-time" height="450" width="650"></svg>
-                <div style="display:flex; flex-direction:column">
-                    <svg id="svg-temp" height="300" width="450"></svg>
-                    <svg id="svg-precip" height="300" width="450"></svg>
+            <div
+                style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 50px; padding-bottom: 30px;">
+                <svg id="svg-time" height="450" width="650" style="font-family: 'Baloo 2', cursive;"></svg>
+                <div style="display:flex; flex-direction:column; gap:30px;">
+                    <svg id="svg-temp" height="300" width="450" style="font-family: 'Baloo 2', cursive;"></svg>
+                    <svg id="svg-precip" height="300" width="450" style="font-family: 'Baloo 2', cursive;"></svg>
                 </div>
+                <div id="y-info-bites" class="y-info"></div>
+                <div id="y-info-temp" class="y-info"></div>
+                <div id="y-info-precip" class="y-info"></div>
 
             </div>
 
@@ -212,18 +216,35 @@
         <div class="map-container">
             <div id="mapCanvas"></div>
             <div id="layer-control" class="sidebar">
-              <div id="layer-buttons"></div>
-              <h4 style="margin-bottom: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #041F3D;">
-                Tap a dog to discover its top territory for bites
-              </h4>
-              
-              <div id="image-button-grid" class="image-grid"></div>
+                <div id="layer-buttons"></div>
+                <h4 style="margin-bottom: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #041F3D;">
+                    Tap a dog to discover its top territory for bites
+                </h4>
+
+                <div id="image-button-grid" class="image-grid"></div>
             </div>
             <div id="geocoder-container"></div>
-          </div>
-          
+        </div>
+
 
     </div>
+
+    <style>
+        .y-info {
+            position: absolute;
+            background: white;
+            border: 3px solid;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 
 
 
@@ -1271,18 +1292,20 @@
 
             svg_time.append("text")
                 .attr("transform", `rotate(-90)`)
-                .attr("y", 10)
+                .attr("y", 12)
                 .attr("x", -height_time / 2 + 30)
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .style("font-size", "14px")
+                .style("font-size", "16px")
+                .style("font-weight", "bold")
                 .text("Number of Bites");
 
             svg_time.append("text")
                 .attr("x", margin_time.left + chartWidth_time / 2)
                 .attr("y", height_time - 5)
                 .style("text-anchor", "middle")
-                .style("font-size", "14px")
+                .style("font-size", "16px")
+                .style("font-weight", "bold")
                 .text("Time (Month-Year)");
 
 
@@ -1333,17 +1356,20 @@
             svg_temp.append("text")
                 .attr("transform", `rotate(-90)`)
                 .attr("y", 10)
-                .attr("x", -height_temp / 2)
+                .attr("x", -height_temp / 2 + 30)
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .style("font-size", "14px")
+                .style("font-size", "13px")
+                .style("font-weight", "bold")
                 .text("Average Temperature(F)");
+
 
             svg_temp.append("text")
                 .attr("x", margin_temp.left + chartWidth_temp / 2)
                 .attr("y", height_temp - 5)
                 .style("text-anchor", "middle")
-                .style("font-size", "14px")
+                .style("font-size", "13px")
+                .style("font-weight", "bold")
                 .text("Time (Month-Year)");
 
 
@@ -1394,28 +1420,60 @@
             svg_precip.append("text")
                 .attr("transform", `rotate(-90)`)
                 .attr("y", 10)
-                .attr("x", -height_precip / 2)
+                .attr("x", -height_precip / 2 + 30)
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .style("font-size", "14px")
+                .style("font-size", "13px")
+                .style("font-weight", "bold")
                 .text("Average Precipitation");
 
             svg_precip.append("text")
                 .attr("x", margin_precip.left + chartWidth_precip / 2)
                 .attr("y", height_precip - 5)
                 .style("text-anchor", "middle")
-                .style("font-size", "14px")
+                .style("font-size", "13px")
+                .style("font-weight", "bold")
                 .text("Time (Month-Year)");
 
 
-            // ============ VERTICAL LINE INTERACTION ============
             const allSVGs = [
-                { svg: svg_time, g: g_time, xScale: xScale_time, height: chartHeight_time },
-                { svg: svg_temp, g: g_temp, xScale: xScale_temp, height: chartHeight_temp },
-                { svg: svg_precip, g: g_precip, xScale: xScale_precip, height: chartHeight_precip }
+                {
+                    svg: svg_time,
+                    g: g_time,
+                    xScale: xScale_time,
+                    yScale: yScale_time,
+                    dataKey: "totalBites",
+                    label: "Bites",
+                    color: "#FD8C40",
+                    height: chartHeight_time,
+                    chartWidth: chartWidth_time
+                },
+                {
+                    svg: svg_temp,
+                    g: g_temp,
+                    xScale: xScale_temp,
+                    yScale: yScale_temp,
+                    dataKey: "avgTemp",
+                    label: "Avg Temp (°F)",
+                    color: "#F4D35E",
+                    height: chartHeight_temp,
+                    chartWidth: chartWidth_temp
+                },
+                {
+                    svg: svg_precip,
+                    g: g_precip,
+                    xScale: xScale_precip,
+                    yScale: yScale_precip,
+                    dataKey: "avgPrecip",
+                    label: "Avg Precip",
+                    color: "#3ec9c1",
+                    height: chartHeight_precip,
+                    chartWidth: chartWidth_precip
+                }
             ];
 
-            allSVGs.forEach(({ g, height }) => {
+            // === Append vlines, circles, and tooltip groups ===
+            allSVGs.forEach(({ g, height, color }) => {
                 g.append("line")
                     .attr("class", "vline")
                     .attr("y1", 0)
@@ -1423,21 +1481,114 @@
                     .attr("stroke", "gray")
                     .attr("stroke-dasharray", "4")
                     .style("opacity", 0);
+
+                g.append("circle")
+                    .attr("class", "hover-circle")
+                    .attr("r", 5)
+                    .attr("fill", color)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2)
+                    .style("opacity", 0);
+
+                const tooltipGroup = g.append("g")
+                    .attr("class", "tooltip-group")
+                    .style("display", "none");
+
+                tooltipGroup.append("rect")
+                    .attr("class", "tooltip-box")
+                    .attr("fill", "white")
+                    .attr("stroke", color)
+                    .attr("stroke-width", 2)
+                    .attr("rx", 6)
+                    .attr("ry", 6)
+                    .attr("width", 140)
+                    .attr("height", 45);
+
+                tooltipGroup.append("text")
+                    .attr("class", "tooltip-label")
+                    .attr("x", 10)
+                    .attr("y", 20)
+                    .attr("font-size", 12)
+                    .attr("fill", "#000");
+
+                tooltipGroup.append("text")
+                    .attr("class", "tooltip-value")
+                    .attr("x", 10)
+                    .attr("y", 35)
+                    .attr("font-size", 12)
+                    .attr("font-weight", "bold")
+                    .attr("fill", "#000");
             });
 
-            // Add hover behavior to show vertical lines during mousemove
-            allSVGs.forEach(({ svg, g, xScale }) => {
+            // ... keep your entire code from above ...
+
+            // Add shared brush (full horizontal extent per chart)
+            const brush = d3.brushX()
+                .on("end", brushed);
+
+            // Add brush group to each g element
+            allSVGs.forEach(({ g, chartWidth, height }) => {
+                g.append("g")
+                    .attr("class", "brush")
+                    .call(
+                        brush.extent([[0, 0], [chartWidth, height]])
+                    );
+            });
+
+            let currentData = monthlyData;
+            let dataOffset = 0; // index offset from brushing
+
+            // === Add initial hover logic ===
+            allSVGs.forEach(({ svg, xScale, yScale, g, dataKey, label, color, chartWidth }) => {
                 svg.on("mousemove", function (event) {
                     const [mouseX] = d3.pointer(event);
-                    const chartX = mouseX - 70; // Adjust for margin
-
+                    const chartX = mouseX - 70; // margin.left
                     const index = Math.round(xScale.invert(chartX));
-                    if (index >= 0 && index < monthlyData.length) {
-                        allSVGs.forEach(({ g, xScale }) => {
+
+                    if (index >= 0 && index < currentData.length) {
+                        const actualIndex = index + dataOffset;
+                        const data = monthlyData[actualIndex];
+
+                        allSVGs.forEach(({ g, xScale, yScale, dataKey, label, color, chartWidth }) => {
+                            const x = xScale(index);
+                            const y = yScale(data[dataKey]);
+
                             g.select(".vline")
-                                .attr("x1", xScale(index))
-                                .attr("x2", xScale(index))
+                                .attr("x1", x)
+                                .attr("x2", x)
                                 .style("opacity", 1);
+
+                            g.select(".hover-circle")
+                                .attr("cx", x)
+                                .attr("cy", y)
+                                .style("opacity", 1);
+
+                            const tooltipWidth = 140;
+                            const tooltipHeight = 45;
+                            const padding = 10;
+
+                            let tooltipX = x + padding;
+                            let tooltipY = y - tooltipHeight - padding;
+
+                            if (x + tooltipWidth + padding > chartWidth) {
+                                tooltipX = x - tooltipWidth - padding;
+                            }
+                            if (tooltipY < 0) {
+                                tooltipY = y + padding;
+                            }
+
+                            const tooltipGroup = g.select(".tooltip-group")
+                                .attr("transform", `translate(${tooltipX},${tooltipY})`)
+                                .style("display", "block");
+
+                            tooltipGroup.select(".tooltip-label")
+                                .text(`${data.monthYear}`);
+
+                            tooltipGroup.select(".tooltip-value")
+                                .text(`${label}: ${data[dataKey].toFixed(2)}`);
+
+                            tooltipGroup.select(".tooltip-box")
+                                .attr("stroke", color);
                         });
                     }
                 });
@@ -1445,9 +1596,60 @@
                 svg.on("mouseleave", function () {
                     allSVGs.forEach(({ g }) => {
                         g.select(".vline").style("opacity", 0);
+                        g.select(".hover-circle").style("opacity", 0);
+                        g.select(".tooltip-group").style("display", "none");
                     });
                 });
             });
+
+            function brushed(event) {
+                if (!event.selection) return;
+
+                // Use full dynamic width per chart instead of fixed chartWidth_time
+                const [x0, x1] = event.selection;
+
+                const index0 = Math.max(0, Math.floor(xScale_time.invert(x0)));
+                const index1 = Math.min(monthlyData.length - 1, Math.ceil(xScale_time.invert(x1)));
+
+                const brushedData = monthlyData.slice(index0, index1 + 1);
+                currentData = brushedData;
+                dataOffset = index0;
+
+                allSVGs.forEach((chart) => {
+                    const { xScale, yScale, g, dataKey, chartWidth, height, color, label } = chart;
+
+                    xScale.domain([0, brushedData.length - 1]);
+
+                    const updatedLine = d3.line()
+                        .x((d, i) => xScale(i))
+                        .y(d => yScale(d[dataKey]));
+
+                    g.select("path")
+                        .datum(brushedData)
+                        .attr("d", updatedLine);
+
+                    const axis = d3.axisBottom(xScale)
+                        .ticks(brushedData.length)
+                        .tickFormat((d, i) => i % 12 === 0 ? brushedData[i]?.monthYear : '');
+
+                    g.select(".x-axis")?.remove();
+                    const xAxisGroup = g.append("g")
+                        .attr("class", "x-axis")
+                        .attr("transform", `translate(0,${height})`)
+                        .call(axis);
+
+                    xAxisGroup.selectAll("text")
+                        .attr("transform", "rotate(45)")
+                        .style("text-anchor", "start");
+
+                    g.select(".brush").call(brush.move, null);
+                });
+            }
+
+
+
+
+
 
         }
 
@@ -1824,34 +2026,34 @@
         let activeBreed = null;
 
         function updateBreedIconLayer(breed) {
-  // If clicked breed is already active, clear it
-  if (activeBreed === breed) {
-    map.getSource('breed-icon-source').setData({
-      type: 'FeatureCollection',
-      features: []
-    });
-    activeBreed = null;
-    return;
-  }
+            // If clicked breed is already active, clear it
+            if (activeBreed === breed) {
+                map.getSource('breed-icon-source').setData({
+                    type: 'FeatureCollection',
+                    features: []
+                });
+                activeBreed = null;
+                return;
+            }
 
-  // Otherwise update to new breed
-  activeBreed = breed;
+            // Otherwise update to new breed
+            activeBreed = breed;
 
-  const filteredFeatures = zipCentroidGeoJSON.features.filter(f =>
-    f.properties.top_biter_by_bite_ratio === breed
-  ).map(f => ({
-    type: 'Feature',
-    geometry: f.geometry,
-    properties: {
-      icon: breed.replace(/ /g, '_')
-    }
-  }));
+            const filteredFeatures = zipCentroidGeoJSON.features.filter(f =>
+                f.properties.top_biter_by_bite_ratio === breed
+            ).map(f => ({
+                type: 'Feature',
+                geometry: f.geometry,
+                properties: {
+                    icon: breed.replace(/ /g, '_')
+                }
+            }));
 
-  map.getSource('breed-icon-source').setData({
-    type: 'FeatureCollection',
-    features: filteredFeatures
-  });
-}
+            map.getSource('breed-icon-source').setData({
+                type: 'FeatureCollection',
+                features: filteredFeatures
+            });
+        }
 
         const grid = document.getElementById('image-button-grid');
 
