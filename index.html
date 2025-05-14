@@ -1688,6 +1688,9 @@
             zoom: 9
         });
 
+        map.dragRotate.disable();
+map.touchZoomRotate.disableRotation();
+
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl,
@@ -1871,10 +1874,10 @@
                             'interpolate',
                             ['linear'],
                             ['get', 'number_of_bites'],
-                            0, 3,
+                            0, 2,
                             250,6,
-                            500, 9,
-                            750, 12
+                            500, 12,
+                            750, 18
                         ],
                         'circle-color': [
                             'interpolate',
