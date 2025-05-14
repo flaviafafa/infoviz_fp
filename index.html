@@ -1171,6 +1171,8 @@
                 d.ageLabel = d.age === 1 ? "≤1" : d.age.toString();
             });
 
+            console.log(ageData)
+
             // Set up scales
             const xScale_age = d3.scaleBand()
                 .domain(ageData.map(d => d.ageLabel))
