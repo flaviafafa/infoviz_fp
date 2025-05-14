@@ -37,6 +37,21 @@
             margin-bottom: 60px;
         }
 
+        h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #FF5800;
+            margin-top: 40px;
+            margin-bottom: 60px;
+        }
+
+        #text {
+            margin-left: 500px;
+            margin-right:500px
+
+
+        }
+
         .colored-bg {
             background-color: #ffefda
         }
@@ -210,7 +225,34 @@
     <!--Bite incidents by neighborhood-->
     <div class="session colored-bg">
         <div id="container-zip" class="colored-bg container-centered">
-            <h2>5. Explore Where NYC's Dog Bites Happen—and Why</h2>
+            <h2>5. The Bite Map</h2>
+            <h4> Explore NYC's Dog Bites and its potential spatial factors</h4>
+            <p id="text">
+                This interactive map invites New York City residents to explore patterns in dog bite incidents, alongside contextual factors such as dog population density and the presence of open spaces and parks. By toggling between data layers and visualizing bite frequency by ZIP code, users can begin to understand where bites happen—and what might influence them.
+              </p>
+              
+              <p>
+                <strong>Two key findings emerged from this data:</strong>
+              </p>
+              
+              <p>
+                <strong>1. Dog bite frequency does not directly correlate with dog population density.</strong><br>
+                Some ZIP codes with the highest numbers of dogs report only moderate or even low bite incidents. This suggests that a high dog population alone is not a reliable predictor of bite risk.
+              </p>
+              
+              <p>
+                <strong>2. Open spaces and park access may be associated with bite frequency—but not consistently.</strong><br>
+                The ZIP code with the highest number of recorded dog bites also contains over 20 parks and open spaces. While this suggests a potential link between public gathering areas and bite frequency, the pattern does not hold true across all neighborhoods, indicating that additional social or environmental factors may be at play.
+              </p>
+              
+              <p>
+                In addition to area-based insights, this map offers a unique tool for breed-specific analysis. Users can click on breed icons to identify the ZIP codes where each breed has the highest bite rate, providing a visual sense of territorial bite dominance. This feature may also help shed light on perceived aggressiveness patterns among certain breeds.
+              </p>
+              
+              <p>
+                Together, these layers empower NYC residents to better understand when and where dog bites are most likely to occur—and to consider how urban context, breed characteristics, and public space usage may intersect in complex ways.
+              </p>
+              
         </div>
 
         <div class="map-container">
@@ -220,6 +262,7 @@
                 <h4 style="margin-bottom: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #041F3D;">
                     Tap a dog to discover its top territory for bites
                 </h4>
+              
 
                 <div id="image-button-grid" class="image-grid"></div>
             </div>
@@ -1695,7 +1738,7 @@ map.touchZoomRotate.disableRotation();
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl,
             marker: true,
-            placeholder: "Search for your location...",
+            placeholder: "Search...",
             zoom: 14
         });
 
@@ -2072,7 +2115,6 @@ map.touchZoomRotate.disableRotation();
         let activeBreed = null;
 
         function updateBreedIconLayer(breed) {
-            // If clicked breed is already active, clear it
             if (activeBreed === breed) {
                 map.getSource('breed-icon-source').setData({
                     type: 'FeatureCollection',
@@ -2082,7 +2124,6 @@ map.touchZoomRotate.disableRotation();
                 return;
             }
 
-            // Otherwise update to new breed
             activeBreed = breed;
 
             const filteredFeatures = zipCentroidGeoJSON.features.filter(f =>
