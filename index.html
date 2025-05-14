@@ -28,6 +28,7 @@
             margin-left: auto;
             margin-right: auto;
             text-align: center;
+            padding-bottom: 30px;
         }
 
         h2 {
@@ -35,7 +36,7 @@
             font-weight: 700;
             color: #FF5800;
             margin-top: 40px;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
 
         h4 {
@@ -163,11 +164,6 @@
             margin-right: 15%;
             text-align: left;
         }
-
-        h3{
-            margin-top: 0px;
-
-        }
     </style>
 
 
@@ -180,12 +176,12 @@
         <div>
             <img src="images/Bite.png" alt="Dog Bite Cartoon" width="600"
                 style="margin-top: -40px; margin-bottom: -40px;">
-            <h1 style="font-weight:800; font-size: 36px;">
+            <h1 style="font-weight:800; font-size: 36px; margin-bottom: 5px">
                 Bitten by the Numbers: A Data Story on NYC Dogs
             </h1>
-            <h3>Flavia Jiang, Curtis Xu, Xinyi Zhou</h3>
+            <h3 style="margin-top: 0px; color: #FF5800">Flavia Jiang, Curtis Xu, Xinyi Zhou</h3>
 
-            <div class="descriptions">
+            <div class="descriptions" style="margin-top: 40px; padding-bottom: 30px;">
                 <p>
                 Have you ever wondered where and when dogs bite the most in New York City? 
                 From quiet neighborhoods in Queens to bustling blocks in Manhattan, <strong>more 
@@ -214,7 +210,22 @@
             <h2>1. Are These Breeds Friendlier (or Bite-ier) Than You Expected?</h2>
             <svg id="svg-breed" height="490" width="960"></svg>
             <div class="descriptions">
-                <p></p>
+                <p>
+                    Which breeds bite more or less than expected? <strong>We compared bite frequency 
+                    scores</strong> — normalized by the number of licensed dogs per breed —<strong> with 
+                    owner-rated aggressiveness scores</strong> from the 2024 Forbes Advisor Pet Insurance 
+                    Survey, where higher scores reflect greater perceived aggressiveness.
+                </p>
+                <p>
+                    Breeds like American Bulldogs and German Shepherds bite in line with owner perceptions. 
+                    Golden and Labrador Retrievers bite more than expected, while Miniature Schnauzers and 
+                    Pomeranians bite less. Cavalier King Charles Spaniels and Havanese are gentle as 
+                    expected.
+                </p>
+                <p>
+                    This chart is meant to inform, not stereotype. <strong>Use the sorting buttons at the 
+                    top of the chart</strong> to explore the patterns for yourself!
+                </p>
             </div>
         </div>
     </div>
@@ -222,8 +233,24 @@
     <!--Bite incidents by gender x spay & neuter-->
     <div class="session">
         <div id="container-gender" class="container-centered">
-            <h2>2. Spaying or Neutering Makes Dogs Over 2x Less Likely to Bite</h2>
-            <svg id="svg-gender" height="350" width="560"></svg>
+            <h2 style="margin-bottom: 20px">2. Spaying or Neutering Makes Dogs Over 2x Less Likely to Bite</h2>
+            <svg id="svg-gender" height="350" width="560" style="margin-bottom: 20px"></svg>
+            <div class="descriptions">
+                <p>
+                Spaying and neutering are strongly linked to reduced biting behavior in dogs. <strong>Hover over 
+                the nodes</strong> to explore each data point. As shown in the chart, spayed female dogs are 
+                <strong>2.5 times less likely to bite</strong> than unspayed females, and neutered male dogs 
+                are <strong>2.9 times less likely </strong> to bite than their unneutered counterparts.
+            </p>
+            <p>
+                For the safety of your dog, yourself, and your community, spaying or neutering is worth considering. 
+                It also offers additional health benefits - learn more 
+                in <a href="https://www.avma.org/resources-tools/pet-owners/petcare/spaying-and-neutering" target="_blank">this 
+                article</a> from the American Veterinary Medical Association.
+            </p>
+
+            </div>
+
         </div>
     </div>
 
