@@ -204,7 +204,6 @@
             padding: 10px;
             height: 100%;
         }
-
     </style>
 
 
@@ -252,9 +251,9 @@
             <svg id="svg-breed" height="490" width="1060"></svg>
             <div class="descriptions">
                 <p>
-                    Which breeds bite more or less than expected? <strong>We compared bite frequency 
-                    scores</strong> — normalized by the number of licensed dogs per breed —<strong> with 
-                    owner-rated aggressiveness scores</strong> from the 2024 Forbes Advisor Pet Insurance 
+                    Which breeds bite more or less than expected? <strong>We compared bite frequency
+                        scores</strong> — normalized by the number of licensed dogs per breed —<strong> with
+                        owner-rated aggressiveness scores</strong> from the 2024 Forbes Advisor Pet Insurance
                     Survey, where higher scores reflect greater perceived aggressiveness.
                 </p>
                 <p>
@@ -356,6 +355,9 @@
                     </p>
                 </div>
 
+            </div>
+            <div style="padding-top: 40px;">
+                <button class="reset-button">RESET</button>
             </div>
             <div
                 style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 50px; padding-bottom: 30px; padding-top:100px;">
@@ -1733,7 +1735,7 @@
             const brush = d3.brushX()
                 .on("end", brushed);
 
- 
+
             allSVGs.forEach(({ g, chartWidth, height }) => {
                 g.append("g")
                     .attr("class", "brush")
@@ -1743,7 +1745,7 @@
             });
 
             let currentData = monthlyData;
-            let dataOffset = 0; 
+            let dataOffset = 0;
 
             //initial hover
             allSVGs.forEach(({ svg, xScale, yScale, g, dataKey, label, color, chartWidth }) => {
@@ -1809,18 +1811,18 @@
                 });
             });
 
-        
+
             function brushed(event) {
                 if (!event.selection) return;
 
                 // Brush selection coordinates
                 const [x0, x1] = event.selection;
 
-            
+
                 const index0 = Math.max(0, Math.floor(xScale_time.invert(x0)));
                 const index1 = Math.min(monthlyData.length - 1, Math.ceil(xScale_time.invert(x1)));
 
-                
+
                 const brushedData = monthlyData.slice(index0, index1 + 1);
                 currentData = brushedData;
                 dataOffset = index0;
@@ -1829,10 +1831,10 @@
                 allSVGs.forEach((chart) => {
                     const { xScale, yScale, g, dataKey, chartWidth, height } = chart;
 
-                    
+
                     xScale.domain([0, brushedData.length - 1]);
 
-                    
+
                     const updatedLine = d3.line()
                         .x((d, i) => xScale(i))
                         .y(d => yScale(d[dataKey]));
@@ -1841,20 +1843,20 @@
                         .datum(brushedData)
                         .attr("d", updatedLine);
 
-                    
+
                     let tickValues;
                     let tickFormat;
 
                     if (brushedData.length <= 10) {
-                        
+
                         tickValues = d3.range(0, brushedData.length);
                         tickFormat = i => brushedData[i]?.monthYear;
                     } else {
-                        
+
                         const step = Math.ceil(brushedData.length / 10);
                         tickValues = d3.range(0, brushedData.length, step);
 
-                        
+
                         if (!tickValues.includes(0)) tickValues.unshift(0);
                         if (!tickValues.includes(brushedData.length - 1))
                             tickValues.push(brushedData.length - 1);
@@ -1866,35 +1868,30 @@
                         .tickValues(tickValues)
                         .tickFormat(tickFormat);
 
-                    
+
                     g.select(".x-axis")
                         .transition()
                         .duration(300)
                         .call(axis);
 
-                    
+
                     g.select(".x-axis").selectAll("text")
                         .attr("transform", "rotate(45)")
                         .style("text-anchor", "start");
 
-                    
+
                     g.select(".brush").call(brush.move, null);
                 });
             }
 
 
-            
+
             const timeContainer = d3.select("#container-time");
+            const resetButton = timeContainer.select(".reset-button");
 
-            
-            const timeDescriptionDiv = timeContainer.select('div.time-description');
-            timeContainer.style("position", "relative");
 
-            const resetButton = timeContainer
-                .insert("button", "div")
+            resetButton
                 .attr("id", "reset-brush-button")
-                .attr("class", "reset-button")
-                .style("position", "absolute")
                 .style("top", "520px")
                 .style("right", "45%")
                 .style("padding", "10px 30px")
@@ -1904,7 +1901,7 @@
                 .style("cursor", "pointer")
                 .style("font-size", "14px")
                 .text("Reset Zoom")
-                .on("click", resetBrush);
+                .on("click", resetBrush)
 
 
             function resetBrush() {
