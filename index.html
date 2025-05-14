@@ -9,7 +9,8 @@
         src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.1.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.1.0/mapbox-gl-geocoder.css">
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
@@ -158,16 +159,53 @@
             transform: scale(1.05);
         }
 
-        .descriptions{
+        .descriptions {
             margin-left: 15%;
             margin-right: 15%;
             text-align: left;
         }
 
-        h3{
+        h3 {
             margin-top: 0px;
 
         }
+
+        .y-info {
+            position: absolute;
+            background: white;
+            border: 3px solid;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .temp-bite {
+            background-color: #FCF0DC;
+            border-radius: 10px;
+            padding: 10px;
+            height: 100%;
+        }
+
+        .precip-bite {
+            background-color: #6ac6c090;
+            border-radius: 10px;
+            padding: 10px;
+            height: 100%;
+        }
+
+        .special {
+            background-color: #f0925388;
+            border-radius: 10px;
+            padding: 10px;
+            height: 100%;
+        }
+
     </style>
 
 
@@ -187,22 +225,22 @@
 
             <div class="descriptions">
                 <p>
-                Have you ever wondered where and when dogs bite the most in New York City? 
-                From quiet neighborhoods in Queens to bustling blocks in Manhattan, <strong>more 
-                than 28,000 dog bite incidents </strong> were reported across the five boroughs between 
-                2018 and 2023. Using data from the New York City Department of Health and 
-                Mental Hygiene (NYC DOHMH), we dive deep into these reports to uncover trends 
-                and surprising patterns. 
+                    Have you ever wondered where and when dogs bite the most in New York City?
+                    From quiet neighborhoods in Queens to bustling blocks in Manhattan, <strong>more
+                        than 28,000 dog bite incidents </strong> were reported across the five boroughs between
+                    2018 and 2023. Using data from the New York City Department of Health and
+                    Mental Hygiene (NYC DOHMH), we dive deep into these reports to uncover trends
+                    and surprising patterns.
                 </p>
 
                 <p>
-                In this article, you&#39;ll find breakdowns of <strong>dog bite incidents by breed, age, 
-                gender, spaying or neutering status, time of year, and neighborhood </strong>. Whether
-                you're a dog owner hoping to prevent aggressive behavior or a city dweller 
-                just trying to steer clear of risky encounters, our goal is to provide insights 
-                that are both informative and practical. Understanding when, where, and under 
-                what circumstances dogs are most likely to bite can <strong>help all of us — humans and 
-                dogs — coexist a little more safely in this crowded city.</strong>
+                    In this article, you&#39;ll find breakdowns of <strong>dog bite incidents by breed, age,
+                        gender, spaying or neutering status, time of year, and neighborhood </strong>. Whether
+                    you're a dog owner hoping to prevent aggressive behavior or a city dweller
+                    just trying to steer clear of risky encounters, our goal is to provide insights
+                    that are both informative and practical. Understanding when, where, and under
+                    what circumstances dogs are most likely to bite can <strong>help all of us — humans and
+                        dogs — coexist a little more safely in this crowded city.</strong>
                 </p>
             </div>
         </div>
@@ -238,9 +276,46 @@
     <!--Bite incidents by time-->
     <div class="session">
         <div id="container-time" class="container-centered">
-            <h2>4. Do Dog Bites Spike in Summer—Right Alongside Ice Cream Sales?</h2>
+            <h2>4. Any relationships Between Dog Bites & External Environmental Factors?</h2>
+            <div class="tiem-description"
+                style="display:flex; flex-direction:row; gap:50px; padding-left: 150px; padding-right: 150px; justify-content: flex-start; align-items: flex-start; text-align: left;">
+                <div class="temp-bite">
+                    <p><strong>Relationship between temperature and number of bites</strong></p>
+                    <p>The line graphs show a clear correlation between rising temperatures and an increase in dog
+                        bites,
+                        suggesting that dogs may become more aggressive in hot weather, leading to pent-up energy and
+                        frustration. This trend highlights the potential impact of seasonal temperature changes on dog
+                        behavior and bite incidents, warranting further investigation into underlying causes and
+                        preventive measures.
+                    </p>
+                </div>
+                <div class="precip-bite">
+                    <p><strong>Relationship between precipitation and number of bites</strong></p>
+                    <p>The line graphs also demonstrate no significant correlation between the number of dog bites and
+                        precipitation
+                        Levels. Over the years, the pattern of precipitation changes has fluctuated considerably. This
+                        may be due to the fact that dog walking habits remain relatively consistent regardless of
+                        humidity.
+                        Alternatively, factors such as temperature or human activity patterns may have a greater impact
+                        on bite incidents than rainfall alone.</p>
+                </div>
+                <div class="special">
+                    <p><strong>Special Finding<br>A Sharp decline between 2020 and 2021</strong></p>
+                    <p>The number of dog bites dropped significantly in April 2020, even as temperatures rose—a trend
+                        that diverges
+                        from the typical seasonal pattern. This anomaly coincides with the onset of COVID-19 lockdowns,
+                        suggesting
+                        that reduced outdoor activity and fewer dog walks during quarantine likely contributed to the
+                        decline.
+                        This observation highlights how human behavior, not just environmental factors like temperature,
+                        can
+                        influence bite incidents.
+                    </p>
+                </div>
+
+            </div>
             <div
-                style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 50px; padding-bottom: 30px;">
+                style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 50px; padding-bottom: 30px; padding-top:100px;">
                 <svg id="svg-time" height="450" width="650" style="font-family: 'Baloo 2', Comic Sans MS, Arial;"></svg>
                 <div style="display:flex; flex-direction:column; gap:30px;">
                     <svg id="svg-temp" height="300" width="450"
@@ -321,23 +396,6 @@
 
 
     </div>
-
-    <style>
-        .y-info {
-            position: absolute;
-            background: white;
-            border: 3px solid;
-            border-radius: 10px;
-            padding: 8px 12px;
-            font-family: sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a1a1a;
-            pointer-events: none;
-            opacity: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-    </style>
 
 
 
@@ -1566,7 +1624,7 @@
                 }
             ];
 
-            // === Append vlines, circles, and tooltip groups ===
+            // Append vlines, circles and groups
             allSVGs.forEach(({ g, height, color }) => {
                 g.append("line")
                     .attr("class", "vline")
@@ -1614,11 +1672,11 @@
                     .attr("fill", "#000");
             });
 
-            // Add shared brush (full horizontal extent per chart)
+            // Add shared brush
             const brush = d3.brushX()
                 .on("end", brushed);
 
-            // Add brush group to each g element
+ 
             allSVGs.forEach(({ g, chartWidth, height }) => {
                 g.append("g")
                     .attr("class", "brush")
@@ -1628,9 +1686,9 @@
             });
 
             let currentData = monthlyData;
-            let dataOffset = 0; // index offset from brushing
+            let dataOffset = 0; 
 
-            // === Add initial hover logic ===
+            //initial hover
             allSVGs.forEach(({ svg, xScale, yScale, g, dataKey, label, color, chartWidth }) => {
                 svg.on("mousemove", function (event) {
                     const [mouseX] = d3.pointer(event);
@@ -1694,18 +1752,18 @@
                 });
             });
 
-            // FIXED BRUSHED FUNCTION - This is the key fixed part of the code
+        
             function brushed(event) {
                 if (!event.selection) return;
 
-                // Get brush selection coordinates
+                // Brush selection coordinates
                 const [x0, x1] = event.selection;
 
-                // Convert to indices in the original data
+            
                 const index0 = Math.max(0, Math.floor(xScale_time.invert(x0)));
                 const index1 = Math.min(monthlyData.length - 1, Math.ceil(xScale_time.invert(x1)));
 
-                // Create the brushed data slice
+                
                 const brushedData = monthlyData.slice(index0, index1 + 1);
                 currentData = brushedData;
                 dataOffset = index0;
@@ -1714,10 +1772,10 @@
                 allSVGs.forEach((chart) => {
                     const { xScale, yScale, g, dataKey, chartWidth, height } = chart;
 
-                    // KEY FIX 1: Properly update domain to ensure even spacing
+                    
                     xScale.domain([0, brushedData.length - 1]);
 
-                    // Update the path with the new scale
+                    
                     const updatedLine = d3.line()
                         .x((d, i) => xScale(i))
                         .y(d => yScale(d[dataKey]));
@@ -1726,22 +1784,20 @@
                         .datum(brushedData)
                         .attr("d", updatedLine);
 
-                    // KEY FIX 2: Create updated axis with exact tick positions for each data point
-                    // For few data points (like 3), show all labels
-                    // For many data points, show a reasonable subset
+                    
                     let tickValues;
                     let tickFormat;
 
                     if (brushedData.length <= 10) {
-                        // For 10 or fewer points, show all points
+                        
                         tickValues = d3.range(0, brushedData.length);
                         tickFormat = i => brushedData[i]?.monthYear;
                     } else {
-                        // For more points, show approximately 5-10 labels
+                        
                         const step = Math.ceil(brushedData.length / 10);
                         tickValues = d3.range(0, brushedData.length, step);
 
-                        // Always include first and last point
+                        
                         if (!tickValues.includes(0)) tickValues.unshift(0);
                         if (!tickValues.includes(brushedData.length - 1))
                             tickValues.push(brushedData.length - 1);
@@ -1753,509 +1809,577 @@
                         .tickValues(tickValues)
                         .tickFormat(tickFormat);
 
-                    // Update the existing x-axis with smoother transition
+                    
                     g.select(".x-axis")
                         .transition()
                         .duration(300)
                         .call(axis);
 
-                    // Update text rotation and anchor on the updated axis
+                    
                     g.select(".x-axis").selectAll("text")
                         .attr("transform", "rotate(45)")
                         .style("text-anchor", "start");
 
-                    // Clear the brush selection
+                    
                     g.select(".brush").call(brush.move, null);
                 });
             }
+
+
+            
+            const timeContainer = d3.select("#container-time");
+
+            
+            const timeDescriptionDiv = timeContainer.select('div.time-description');
+            timeContainer.style("position", "relative");
+
+            const resetButton = timeContainer
+                .insert("button", "div")
+                .attr("id", "reset-brush-button")
+                .attr("class", "reset-button")
+                .style("position", "absolute")
+                .style("top", "520px")
+                .style("right", "45%")
+                .style("padding", "10px 30px")
+                .style("background-color", "lightgray")
+                .style("border", "2px solid #000000")
+                .style("border-radius", "30px")
+                .style("cursor", "pointer")
+                .style("font-size", "14px")
+                .text("Reset Zoom")
+                .on("click", resetBrush);
+
+
+            function resetBrush() {
+                currentData = monthlyData;
+                dataOffset = 0;
+
+                allSVGs.forEach((chart) => {
+                    const { xScale, yScale, g, dataKey, chartWidth, height } = chart;
+
+                    xScale.domain([0, monthlyData.length - 1]);
+
+                    const updatedLine = d3.line()
+                        .x((d, i) => xScale(i))
+                        .y(d => yScale(d[dataKey]));
+
+                    g.select("path")
+                        .datum(monthlyData)
+                        .attr("d", updatedLine);
+
+                    const axis = d3.axisBottom(xScale)
+                        .ticks(monthlyData.length)
+                        .tickFormat((d, i) => i % 12 === 0 ? monthlyData[i].monthYear : '');
+
+                    g.select(".x-axis")
+                        .transition()
+                        .duration(300)
+                        .call(axis);
+
+                    g.select(".x-axis").selectAll("text")
+                        .attr("transform", "rotate(45)")
+                        .style("text-anchor", "start");
+
+                    g.select(".brush").call(brush.move, null);
+                });
+            }
+
+            resetButton.on("mouseover", function () {
+                d3.select(this)
+                    .style("background-color", "#F09253")
+            })
+                .on("mouseout", function () {
+                    d3.select(this)
+                        .style("background-color", "lightgray")
+                });
         }
         requestData();
     </script>
 
     <script>
 
-            const imageFilenames = [
-                "American_Bulldog.png",
-                "Australian_Shepherd.png",
-                "Beagle.png",
-                "Bernese_Mountain_Dog.png",
-                "Boston_Terrier.png",
-                "Boxer.png",
-                "Cane_Corso.png",
-                "Doberman_Pinscher.png",
-                "French_Bulldog.png",
-                "German_Shepherd.png",
-                "German_Shorthaired_Pointer.png",
-                "Golden_Retriever.png",
-                "Great_Dane.png",
-                "Labrador_Retriever.png",
-                "Pembroke_Welsh_Corgi.png",
-                "Rottweiler.png",
-                "Siberian_Husky.png"
-            ];
+        const imageFilenames = [
+            "American_Bulldog.png",
+            "Australian_Shepherd.png",
+            "Beagle.png",
+            "Bernese_Mountain_Dog.png",
+            "Boston_Terrier.png",
+            "Boxer.png",
+            "Cane_Corso.png",
+            "Doberman_Pinscher.png",
+            "French_Bulldog.png",
+            "German_Shepherd.png",
+            "German_Shorthaired_Pointer.png",
+            "Golden_Retriever.png",
+            "Great_Dane.png",
+            "Labrador_Retriever.png",
+            "Pembroke_Welsh_Corgi.png",
+            "Rottweiler.png",
+            "Siberian_Husky.png"
+        ];
 
-            // Map framework
-            mapboxgl.accessToken = 'pk.eyJ1Ijoia3g2NCIsImEiOiJjbGkzd2E1dmsxMzNoM2twY2p2azF0bGVlIn0.t_v73kaAMUtoGBPESpw3uA';
+        // Map framework
+        mapboxgl.accessToken = 'pk.eyJ1Ijoia3g2NCIsImEiOiJjbGkzd2E1dmsxMzNoM2twY2p2azF0bGVlIn0.t_v73kaAMUtoGBPESpw3uA';
 
-            const map = new mapboxgl.Map({
-                container: 'mapCanvas',
-                style: 'mapbox://styles/mapbox/light-v11',
-                center: [-74.006, 40.7128],
-                zoom: 9
+        const map = new mapboxgl.Map({
+            container: 'mapCanvas',
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [-74.006, 40.7128],
+            zoom: 9
+        });
+
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: true,
+            placeholder: "Search...",
+            zoom: 14
+        });
+
+        document.getElementById('geocoder-container').appendChild(geocoder.onAdd(map));
+
+        let jsonData = null;
+        let selectMode = false;
+        let marker = null;
+
+        map.on("click", (e) => {
+            if (!selectMode) return;
+
+            const { lng, lat } = e.lngLat;
+
+            if (marker) {
+                marker.setLngLat([lng, lat]);
+            } else {
+                marker = new mapboxgl.Marker()
+                    .setLngLat([lng, lat])
+                    .addTo(map);
+            }
+
+            map.flyTo({ center: [lng, lat], zoom: 15 });
+
+            document.getElementById("location-info").innerText = `Selected Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+            selectMode = false;
+        });
+
+        let zipCentroidGeoJSON = null;
+
+
+        // Load the  files
+        Promise.all([
+            d3.csv("zip_df.csv"),
+            d3.json("nyc_zip_codes_with_centroids.geojson"),
+            d3.json("nyc_open_space.geojson")
+        ]).then(([zipData, zipGeoJSON, parkGeoJSON]) => {
+
+            const biteByZip = {};
+            const dogsByZip = {};
+
+            zipData.forEach(d => {
+                biteByZip[d.zip_code] = +d.number_of_bites;
+                dogsByZip[d.zip_code] = +d.number_of_dogs;
+                d.top_biter_by_bite_ratio = d.top_biter_by_bite_ratio?.trim();
             });
 
-            map.dragRotate.disable();
-            map.touchZoomRotate.disableRotation();
+            const zipCentroidFeatures = [];
 
-            const geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-                marker: true,
-                placeholder: "Search...",
-                zoom: 14
-            });
+            zipGeoJSON.features.forEach(f => {
+                const zip = f.properties.postcode || f.properties.ZIPCODE || f.properties.zip || f.properties.postalCode;
+                const record = zipData.find(d => d.zip_code === zip);
+                const numBites = biteByZip[zip] || 0;
+                const numDogs = dogsByZip[zip] || 0;
+                const topBiter = record?.top_biter_by_bite_ratio || null;
+                f.properties.number_of_bites = numBites;
+                f.properties.number_of_dogs = numDogs;
 
-            document.getElementById('geocoder-container').appendChild(geocoder.onAdd(map));
-
-            let jsonData = null;
-            let selectMode = false;
-            let marker = null;
-
-            map.on("click", (e) => {
-                if (!selectMode) return;
-
-                const { lng, lat } = e.lngLat;
-
-                if (marker) {
-                    marker.setLngLat([lng, lat]);
-                } else {
-                    marker = new mapboxgl.Marker()
-                        .setLngLat([lng, lat])
-                        .addTo(map);
+                if (f.properties.centroid_lon && f.properties.centroid_lat) {
+                    zipCentroidFeatures.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [f.properties.centroid_lon, f.properties.centroid_lat]
+                        },
+                        properties: {
+                            zip: zip,
+                            number_of_bites: numBites,
+                            number_of_dogs: numDogs,
+                            top_biter_by_bite_ratio: topBiter
+                        }
+                    });
                 }
-
-                map.flyTo({ center: [lng, lat], zoom: 15 });
-
-                document.getElementById("location-info").innerText = `Selected Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-
-                selectMode = false;
             });
 
-            let zipCentroidGeoJSON = null;
+            zipCentroidGeoJSON = {
+                type: 'FeatureCollection',
+                features: zipCentroidFeatures
+            };
+
+            console.log("Number of ZIP dots created:", zipCentroidFeatures.length);
+
+            map.on("load", () => {
 
 
-            // Load the  files
-            Promise.all([
-                d3.csv("zip_df.csv"),
-                d3.json("nyc_zip_codes_with_centroids.geojson"),
-                d3.json("nyc_open_space.geojson")
-            ]).then(([zipData, zipGeoJSON, parkGeoJSON]) => {
-
-                const biteByZip = {};
-                const dogsByZip = {};
-
-                zipData.forEach(d => {
-                    biteByZip[d.zip_code] = +d.number_of_bites;
-                    dogsByZip[d.zip_code] = +d.number_of_dogs;
-                    d.top_biter_by_bite_ratio = d.top_biter_by_bite_ratio?.trim();
+                // ---- Parks layer ----
+                map.addSource('parks', {
+                    type: 'geojson',
+                    data: parkGeoJSON
                 });
 
-                const zipCentroidFeatures = [];
-
-                zipGeoJSON.features.forEach(f => {
-                    const zip = f.properties.postcode || f.properties.ZIPCODE || f.properties.zip || f.properties.postalCode;
-                    const record = zipData.find(d => d.zip_code === zip);
-                    const numBites = biteByZip[zip] || 0;
-                    const numDogs = dogsByZip[zip] || 0;
-                    const topBiter = record?.top_biter_by_bite_ratio || null;
-                    f.properties.number_of_bites = numBites;
-                    f.properties.number_of_dogs = numDogs;
-
-                    if (f.properties.centroid_lon && f.properties.centroid_lat) {
-                        zipCentroidFeatures.push({
-                            type: 'Feature',
-                            geometry: {
-                                type: 'Point',
-                                coordinates: [f.properties.centroid_lon, f.properties.centroid_lat]
-                            },
-                            properties: {
-                                zip: zip,
-                                number_of_bites: numBites,
-                                number_of_dogs: numDogs,
-                                top_biter_by_bite_ratio: topBiter
-                            }
-                        });
+                map.addLayer({
+                    'id': 'park-fills',
+                    'type': 'fill',
+                    'source': 'parks',
+                    'paint': {
+                        'fill-color': '#72c27e',
+                        'fill-opacity': 0.6
                     }
                 });
 
-                zipCentroidGeoJSON = {
-                    type: 'FeatureCollection',
-                    features: zipCentroidFeatures
-                };
+                // map.addLayer({
+                //     'id': 'park-borders',
+                //     'type': 'line',
+                //     'source': 'parks',
+                //     'paint': {
+                //         'line-color': '#2e8b57',
+                //         'line-width': 1
+                //     }
+                // });
 
-                console.log("Number of ZIP dots created:", zipCentroidFeatures.length);
-
-                map.on("load", () => {
-
-
-                    // ---- Parks layer ----
-                    map.addSource('parks', {
-                        type: 'geojson',
-                        data: parkGeoJSON
-                    });
-
-                    map.addLayer({
-                        'id': 'park-fills',
-                        'type': 'fill',
-                        'source': 'parks',
-                        'paint': {
-                            'fill-color': '#72c27e',
-                            'fill-opacity': 0.6
-                        }
-                    });
-
-                    // map.addLayer({
-                    //     'id': 'park-borders',
-                    //     'type': 'line',
-                    //     'source': 'parks',
-                    //     'paint': {
-                    //         'line-color': '#2e8b57',
-                    //         'line-width': 1
-                    //     }
-                    // });
-
-                    const parkPopup = new mapboxgl.Popup({
-                        closeButton: false,
-                        closeOnClick: false
-                    });
-
-                    map.on('mouseenter', 'park-fills', (e) => {
-                        map.getCanvas().style.cursor = 'pointer';
-                        const parkName = e.features[0].properties.PARK_NAME || "Unnamed Park";
-                        const coordinates = e.lngLat;
-
-                        parkPopup
-                            .setLngLat(coordinates)
-                            .setHTML(`<strong>${parkName}</strong>`)
-                            .addTo(map);
-                    });
-
-                    map.on('mouseleave', 'park-fills', () => {
-                        map.getCanvas().style.cursor = '';
-                        parkPopup.remove();
-                    });
-
-
-                    // ---- ZIP shape layer ---
-                    map.addSource('zipcodes', {
-                        type: 'geojson',
-                        data: zipGeoJSON
-                    });
-
-                    map.addLayer({
-                        'id': 'zip-dog-fills',
-                        'type': 'fill',
-                        'source': 'zipcodes',
-                        'paint': {
-                            'fill-color': [
-                                'interpolate',
-                                ['linear'],
-                                ['get', 'number_of_dogs'],
-                                0, '#ffffcc',
-                                500, '#a1dab4',
-                                2000, '#41b6c4',
-                                4000, '#2c7fb8',
-                                6000, '#08306b'
-                            ],
-                            'fill-opacity': 0.3
-
-                        }
-                    });
-
-
-
-
-                    // ---- ZIP centroid dots ----
-                    map.addSource('zip-centroids', {
-                        type: 'geojson',
-                        data: zipCentroidGeoJSON
-                    });
-
-                    map.addLayer({
-                        'id': 'zip-centroid-dots',
-                        'type': 'circle',
-                        'source': 'zip-centroids',
-                        'paint': {
-                            'circle-radius': [
-                                'interpolate',
-                                ['linear'],
-                                ['get', 'number_of_bites'],
-                                0, 2,
-                                250, 6,
-                                500, 12,
-                                750, 18
-                            ],
-                            'circle-color': [
-                                'interpolate',
-                                ['linear'],
-                                ['get', 'number_of_bites'],
-                                0, '#ffe082',
-                                50, '#feb24c',
-                                200, '#fd8d3c',
-                                400, '#f03b20',
-                                600, '#bd0026'
-                            ],
-                            'circle-opacity': 0.7
-                            ,
-                            'circle-stroke-color': '#ffffff',
-                            'circle-stroke-width': .5
-                        }
-                    });
-
-                    //                 map.addLayer({
-                    //   id: 'zip-bite-heatmap',
-                    //   type: 'heatmap',
-                    //   source: 'zip-centroids',
-                    //   maxzoom: 15,
-                    //   paint: {
-                    //     'heatmap-weight': [
-                    //       'interpolate',
-                    //       ['linear'],
-                    //       ['get', 'number_of_bites'],
-                    //       0, 0,
-                    //       500, 1
-                    //     ],
-                    //     'heatmap-intensity': 5,
-                    //     'heatmap-radius': [
-                    //       'interpolate',
-                    //       ['linear'],
-                    //       ['zoom'],
-                    //       10, 25,
-                    //       15, 50
-                    //     ],
-                    //     'heatmap-opacity': 0.4,
-                    //     'heatmap-color': [
-                    //       'interpolate',
-                    //       ['linear'],
-                    //       ['heatmap-density'],
-                    //       0, 'rgba(255,255,255,0)',
-                    //       0.2, 'rgba(255,237,160,0.8)',
-                    //       0.4, 'rgba(254,178,76,0.8)',
-                    //       0.6, 'rgba(253,141,60,0.9)',
-                    //       0.8, 'rgba(240,59,32,0.9)',
-                    //       1, 'rgba(189,0,38,0.95)'
-                    //     ]
-                    //   }
-                    // });
-
-                    // map.setLayoutProperty('zip-centroid-dots', 'visibility', 'none');
-
-
-
-
-                    // ---- ZIP dot hover popup ----
-                    const zipPopup = new mapboxgl.Popup({
-                        closeButton: false,
-                        closeOnClick: false
-                    });
-
-                    map.on('mouseenter', 'zip-centroid-dots', (e) => {
-                        map.getCanvas().style.cursor = 'pointer';
-                        const props = e.features[0].properties;
-                        const coordinates = e.lngLat;
-
-                        zipPopup
-                            .setLngLat(coordinates)
-                            .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}<br>Dogs: ${props.number_of_dogs}`)
-
-                            .addTo(map);
-                    });
-
-                    map.on('mouseleave', 'zip-centroid-dots', () => {
-                        map.getCanvas().style.cursor = '';
-                        zipPopup.remove();
-                    });
-
-                    map.addSource('breed-icon-source', {
-                        type: 'geojson',
-                        data: {
-                            type: 'FeatureCollection',
-                            features: []
-                        }
-                    });
-
-                    map.addLayer({
-                        id: 'breed-icon-layer',
-                        type: 'symbol',
-                        source: 'breed-icon-source',
-                        layout: {
-                            'icon-image': ['get', 'icon'],
-                            'icon-size': 0.05,
-                            'icon-allow-overlap': true
-                        }
-                    });
-
-
-
-                    imageFilenames.forEach(filename => {
-                        const name = filename.replace('.png', '');
-                        map.loadImage(`images/${filename}`, (error, image) => {
-                            if (error) return console.error(`Image ${filename} failed to load:`, error);
-                            if (!map.hasImage(name)) {
-                                map.addImage(name, image);
-                            }
-                        });
-                    });
-
-
-
+                const parkPopup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
                 });
 
-            });
+                map.on('mouseenter', 'park-fills', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const parkName = e.features[0].properties.PARK_NAME || "Unnamed Park";
+                    const coordinates = e.lngLat;
 
-
-            function toggleLayer(checkbox, layerBaseId) {
-                const layerIds = [layerBaseId];
-
-                if (layerBaseId.includes('fills')) {
-                    layerIds.push(layerBaseId.replace('fills', 'borders'));
-                }
-
-                layerIds.forEach(layer => {
-                    if (!map.getLayer(layer)) return;
-                    map.setLayoutProperty(layer, 'visibility', checkbox.checked ? 'visible' : 'none');
+                    parkPopup
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>${parkName}</strong>`)
+                        .addTo(map);
                 });
-            }
 
-            function createLegend({ label, layerId, colors, thresholds }) {
-                const container = document.getElementById("layer-buttons");
-
-                const checkboxLabel = document.createElement("label");
-                checkboxLabel.innerHTML = `<input type="checkbox" onchange="toggleLayer(this, '${layerId}')" checked> ${label}`;
-                container.appendChild(checkboxLabel);
-
-                const legendWrapper = document.createElement("div");
-                legendWrapper.className = "discrete-legend";
-
-                const legendBar = document.createElement("div");
-                legendBar.className = "legend-bar";
-                colors.forEach(color => {
-                    const step = document.createElement("div");
-                    step.className = "legend-step";
-                    step.style.background = color;
-                    legendBar.appendChild(step);
+                map.on('mouseleave', 'park-fills', () => {
+                    map.getCanvas().style.cursor = '';
+                    parkPopup.remove();
                 });
-                legendWrapper.appendChild(legendBar);
 
-                const labelRow = document.createElement("div");
-                labelRow.className = "legend-labels";
-                thresholds.forEach(value => {
-                    const span = document.createElement("span");
-                    span.textContent = value;
-                    labelRow.appendChild(span);
+
+                // ---- ZIP shape layer ---
+                map.addSource('zipcodes', {
+                    type: 'geojson',
+                    data: zipGeoJSON
                 });
-                legendWrapper.appendChild(labelRow);
 
-                container.appendChild(legendWrapper);
-            }
+                map.addLayer({
+                    'id': 'zip-dog-fills',
+                    'type': 'fill',
+                    'source': 'zipcodes',
+                    'paint': {
+                        'fill-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'number_of_dogs'],
+                            0, '#ffffcc',
+                            500, '#a1dab4',
+                            2000, '#41b6c4',
+                            4000, '#2c7fb8',
+                            6000, '#08306b'
+                        ],
+                        'fill-opacity': 0.3
 
-
-            createLegend({
-                label: "Bite Incidents",
-                layerId: "zip-centroid-dots",
-                colors: ["#ffe082", "#feb24c", "#fd8d3c", "#f03b20", "#bd0026"],
-                thresholds: ["0", "50", "200", "400", "600+"]
-            });
-
-
-
-            createLegend({
-                label: "Dog Population Distribution",
-                layerId: "zip-dog-fills",
-                colors: ["#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#08306b"],
-                thresholds: ["0", "500", "2000", "4000", "6000+"]
-            });
-
-
-            createLegend({
-                label: "Open Spaces / Parks",
-                layerId: "park-fills",
-                colors: ["#ffffff", "#72c27e"],
-                thresholds: ["Other Areas", "Open Spaces / Parks"]
-            });
+                    }
+                });
 
 
-            let activeBreed = null;
 
-            function updateBreedIconLayer(breed) {
-                if (activeBreed === breed) {
-                    map.getSource('breed-icon-source').setData({
+
+                // ---- ZIP centroid dots ----
+                map.addSource('zip-centroids', {
+                    type: 'geojson',
+                    data: zipCentroidGeoJSON
+                });
+
+                map.addLayer({
+                    'id': 'zip-centroid-dots',
+                    'type': 'circle',
+                    'source': 'zip-centroids',
+                    'paint': {
+                        'circle-radius': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'number_of_bites'],
+                            0, 2,
+                            250, 6,
+                            500, 12,
+                            750, 18
+                        ],
+                        'circle-color': [
+                            'interpolate',
+                            ['linear'],
+                            ['get', 'number_of_bites'],
+                            0, '#ffe082',
+                            50, '#feb24c',
+                            200, '#fd8d3c',
+                            400, '#f03b20',
+                            600, '#bd0026'
+                        ],
+                        'circle-opacity': 0.7
+                        ,
+                        'circle-stroke-color': '#ffffff',
+                        'circle-stroke-width': .5
+                    }
+                });
+
+                //                 map.addLayer({
+                //   id: 'zip-bite-heatmap',
+                //   type: 'heatmap',
+                //   source: 'zip-centroids',
+                //   maxzoom: 15,
+                //   paint: {
+                //     'heatmap-weight': [
+                //       'interpolate',
+                //       ['linear'],
+                //       ['get', 'number_of_bites'],
+                //       0, 0,
+                //       500, 1
+                //     ],
+                //     'heatmap-intensity': 5,
+                //     'heatmap-radius': [
+                //       'interpolate',
+                //       ['linear'],
+                //       ['zoom'],
+                //       10, 25,
+                //       15, 50
+                //     ],
+                //     'heatmap-opacity': 0.4,
+                //     'heatmap-color': [
+                //       'interpolate',
+                //       ['linear'],
+                //       ['heatmap-density'],
+                //       0, 'rgba(255,255,255,0)',
+                //       0.2, 'rgba(255,237,160,0.8)',
+                //       0.4, 'rgba(254,178,76,0.8)',
+                //       0.6, 'rgba(253,141,60,0.9)',
+                //       0.8, 'rgba(240,59,32,0.9)',
+                //       1, 'rgba(189,0,38,0.95)'
+                //     ]
+                //   }
+                // });
+
+                // map.setLayoutProperty('zip-centroid-dots', 'visibility', 'none');
+
+
+
+
+                // ---- ZIP dot hover popup ----
+                const zipPopup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+
+                map.on('mouseenter', 'zip-centroid-dots', (e) => {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const props = e.features[0].properties;
+                    const coordinates = e.lngLat;
+
+                    zipPopup
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>ZIP: ${props.zip}</strong><br>Bites: ${props.number_of_bites}<br>Dogs: ${props.number_of_dogs}`)
+
+                        .addTo(map);
+                });
+
+                map.on('mouseleave', 'zip-centroid-dots', () => {
+                    map.getCanvas().style.cursor = '';
+                    zipPopup.remove();
+                });
+
+                map.addSource('breed-icon-source', {
+                    type: 'geojson',
+                    data: {
                         type: 'FeatureCollection',
                         features: []
-                    });
-                    activeBreed = null;
-                    return;
-                }
-
-                activeBreed = breed;
-
-                const filteredFeatures = zipCentroidGeoJSON.features.filter(f =>
-                    f.properties.top_biter_by_bite_ratio === breed
-                ).map(f => ({
-                    type: 'Feature',
-                    geometry: f.geometry,
-                    properties: {
-                        icon: breed.replace(/ /g, '_')
                     }
-                }));
-
-                map.getSource('breed-icon-source').setData({
-                    type: 'FeatureCollection',
-                    features: filteredFeatures
                 });
+
+                map.addLayer({
+                    id: 'breed-icon-layer',
+                    type: 'symbol',
+                    source: 'breed-icon-source',
+                    layout: {
+                        'icon-image': ['get', 'icon'],
+                        'icon-size': 0.05,
+                        'icon-allow-overlap': true
+                    }
+                });
+
+
+
+                imageFilenames.forEach(filename => {
+                    const name = filename.replace('.png', '');
+                    map.loadImage(`images/${filename}`, (error, image) => {
+                        if (error) return console.error(`Image ${filename} failed to load:`, error);
+                        if (!map.hasImage(name)) {
+                            map.addImage(name, image);
+                        }
+                    });
+                });
+
+
+
+            });
+
+        });
+
+
+        function toggleLayer(checkbox, layerBaseId) {
+            const layerIds = [layerBaseId];
+
+            if (layerBaseId.includes('fills')) {
+                layerIds.push(layerBaseId.replace('fills', 'borders'));
             }
 
-            const grid = document.getElementById('image-button-grid');
+            layerIds.forEach(layer => {
+                if (!map.getLayer(layer)) return;
+                map.setLayoutProperty(layer, 'visibility', checkbox.checked ? 'visible' : 'none');
+            });
+        }
+
+        function createLegend({ label, layerId, colors, thresholds }) {
+            const container = document.getElementById("layer-buttons");
+
+            const checkboxLabel = document.createElement("label");
+            checkboxLabel.innerHTML = `<input type="checkbox" onchange="toggleLayer(this, '${layerId}')" checked> ${label}`;
+            container.appendChild(checkboxLabel);
+
+            const legendWrapper = document.createElement("div");
+            legendWrapper.className = "discrete-legend";
+
+            const legendBar = document.createElement("div");
+            legendBar.className = "legend-bar";
+            colors.forEach(color => {
+                const step = document.createElement("div");
+                step.className = "legend-step";
+                step.style.background = color;
+                legendBar.appendChild(step);
+            });
+            legendWrapper.appendChild(legendBar);
+
+            const labelRow = document.createElement("div");
+            labelRow.className = "legend-labels";
+            thresholds.forEach(value => {
+                const span = document.createElement("span");
+                span.textContent = value;
+                labelRow.appendChild(span);
+            });
+            legendWrapper.appendChild(labelRow);
+
+            container.appendChild(legendWrapper);
+        }
 
 
-            imageFilenames.forEach(filename => {
-                const iconId = filename.replace('.png', '');
-                map.loadImage(`images/${filename}`, (error, image) => {
-                    if (error) {
-                        console.warn(`Could not load image ${filename}:`, error);
-                        return;
-                    }
-                    if (!map.hasImage(iconId)) {
-                        map.addImage(iconId, image);
-                    }
+        createLegend({
+            label: "Bite Incidents",
+            layerId: "zip-centroid-dots",
+            colors: ["#ffe082", "#feb24c", "#fd8d3c", "#f03b20", "#bd0026"],
+            thresholds: ["0", "50", "200", "400", "600+"]
+        });
+
+
+
+        createLegend({
+            label: "Dog Population Distribution",
+            layerId: "zip-dog-fills",
+            colors: ["#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#08306b"],
+            thresholds: ["0", "500", "2000", "4000", "6000+"]
+        });
+
+
+        createLegend({
+            label: "Open Spaces / Parks",
+            layerId: "park-fills",
+            colors: ["#ffffff", "#72c27e"],
+            thresholds: ["Other Areas", "Open Spaces / Parks"]
+        });
+
+
+        let activeBreed = null;
+
+        function updateBreedIconLayer(breed) {
+            if (activeBreed === breed) {
+                map.getSource('breed-icon-source').setData({
+                    type: 'FeatureCollection',
+                    features: []
                 });
+                activeBreed = null;
+                return;
+            }
+
+            activeBreed = breed;
+
+            const filteredFeatures = zipCentroidGeoJSON.features.filter(f =>
+                f.properties.top_biter_by_bite_ratio === breed
+            ).map(f => ({
+                type: 'Feature',
+                geometry: f.geometry,
+                properties: {
+                    icon: breed.replace(/ /g, '_')
+                }
+            }));
+
+            map.getSource('breed-icon-source').setData({
+                type: 'FeatureCollection',
+                features: filteredFeatures
             });
+        }
 
-            imageFilenames.forEach(filename => {
-                const breedName = filename.replace('.png', '').replace(/_/g, ' ');
+        const grid = document.getElementById('image-button-grid');
 
-                const btn = document.createElement('button');
-                btn.style.display = 'flex';
-                btn.style.flexDirection = 'column';
-                btn.style.alignItems = 'center';
-                btn.style.padding = '0';
 
-                const img = document.createElement('img');
-                img.src = `images/${filename}`;
-                img.alt = breedName;
-
-                const label = document.createElement('span');
-                label.textContent = breedName;
-                label.style.fontSize = '12px';
-                label.style.marginTop = '4px';
-                label.style.color = '#041F3D';
-                label.style.textAlign = 'center';
-
-                btn.appendChild(img);
-                btn.appendChild(label);
-                btn.onclick = () => updateBreedIconLayer(breedName);
-                grid.appendChild(btn);
+        imageFilenames.forEach(filename => {
+            const iconId = filename.replace('.png', '');
+            map.loadImage(`images/${filename}`, (error, image) => {
+                if (error) {
+                    console.warn(`Could not load image ${filename}:`, error);
+                    return;
+                }
+                if (!map.hasImage(iconId)) {
+                    map.addImage(iconId, image);
+                }
             });
+        });
+
+        imageFilenames.forEach(filename => {
+            const breedName = filename.replace('.png', '').replace(/_/g, ' ');
+
+            const btn = document.createElement('button');
+            btn.style.display = 'flex';
+            btn.style.flexDirection = 'column';
+            btn.style.alignItems = 'center';
+            btn.style.padding = '0';
+
+            const img = document.createElement('img');
+            img.src = `images/${filename}`;
+            img.alt = breedName;
+
+            const label = document.createElement('span');
+            label.textContent = breedName;
+            label.style.fontSize = '12px';
+            label.style.marginTop = '4px';
+            label.style.color = '#041F3D';
+            label.style.textAlign = 'center';
+
+            btn.appendChild(img);
+            btn.appendChild(label);
+            btn.onclick = () => updateBreedIconLayer(breedName);
+            grid.appendChild(btn);
+        });
 
 
 
