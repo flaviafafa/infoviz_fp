@@ -252,8 +252,8 @@
             <div class="descriptions">
                 <p>
                     Which breeds bite more or less than expected? <strong>We compared bite frequency
-                        scores</strong> — normalized by the number of licensed dogs per breed —<strong> with
-                        owner-rated aggressiveness scores</strong> from the 2024 Forbes Advisor Pet Insurance
+                    scores</strong> — normalized by the number of licensed dogs per breed —<strong> with
+                    owner-rated aggressiveness scores</strong> from the 2024 Forbes Advisor Pet Insurance
                     Survey, where higher scores reflect greater perceived aggressiveness.
                 </p>
                 <p>
@@ -263,8 +263,8 @@
                     expected.
                 </p>
                 <p>
-                    This chart is meant to inform, not stereotype. <strong>Hover over the bars or use the sorting buttons at the 
-                    top of the chart</strong> to explore the patterns for yourself!
+                    This chart is meant to inform, not stereotype. <strong>Hover over the bars or use the sorting 
+                    buttons at the top of the chart</strong> to explore the patterns for yourself!
                 </p>
             </div>
         </div>
@@ -441,13 +441,13 @@
             <div class="container-centered">
                 <div class="descriptions" style="margin-top: 40px; margin-bottom: 40px">
                     <p>
-                    Over the course of this project, we analyzed over 28,000 dog bite incidents in NYC 
-                    from 2015 to 2023. <strong>We explored patterns across breed, age, gender, spaying and 
-                    neutering status, time, and neighborhood</strong>, revealing how biting behaviors can vary 
-                    widely based on both biological and environmental factors. Some breeds bite more 
-                    than expected, younger dogs bite far more frequently than older ones, and spaying 
-                    or neutering significantly reduces the likelihood of a bite. We also saw how 
-                    temperature, urban context, and the pandemic shaped bite trends across the city.
+                        Over the course of this project, we analyzed over 28,000 dog bite incidents in NYC 
+                        from 2015 to 2023. <strong>We explored patterns across breed, age, gender, spaying and 
+                        neutering status, time, and neighborhood</strong>, revealing how biting behaviors can vary 
+                        widely based on both biological and environmental factors. Some breeds bite more 
+                        than expected, younger dogs bite far more frequently than older ones, and spaying 
+                        or neutering significantly reduces the likelihood of a bite. We also saw how 
+                        temperature, urban context, and the pandemic shaped bite trends across the city.
                     </p>
                     <p>
                         <strong>Dog bites are often preventable with the right awareness and care.</strong> For example, owners 
@@ -498,7 +498,7 @@
             const g_breed = svg_breed.append("g")
                 .attr("transform", `translate(${margin_breed.left},${margin_breed.top})`);
 
-            // Update chart based on current sort
+            // Update chart 
             function updateChart() {
                 const sortedData = [...breedData].sort((a, b) =>
                     currentSort === "bite" ?
@@ -849,7 +849,7 @@
             // --------------------------------------------------
             // --------------------------------------------------
 
-            // Chart 2: Bite incidents by gender x spaying & neutering
+            // Chart 2: Bite incidents by gender x spaying/neutering
             const genderData = await d3.csv("gender_spay_df.csv");
 
             genderData.forEach(d => {
